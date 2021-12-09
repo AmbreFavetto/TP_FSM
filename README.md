@@ -41,46 +41,55 @@ __TABLE OF SERVER STATUSES__
 |   RESULTS_AVAILABLE   |   the query is finished and some results are waiting     |
 
 # Client Side
-__Indexer State & setup__
-INDEXER <STATUS|START|STOP|PAUSE|RESUME>
-__Get status and Controls the indexing__
-GET <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>
-ADD <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> <folder to add>
-PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add>  DONE
+__Indexer State & setup__ 
+INDEXER <STATUS|START|STOP|PAUSE|RESUME> 
 
-**Example :**
- **PUSH WHITELIST**
- C:/
- d:/
- DONE
+__Get status and Controls the indexing__ 
+GET <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> 
+ADD <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> <folder to add> 
+PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add>  DONE 
 
-  CLEAR <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> 
-  Querying 
-  SEARCH <filename_part> [OPTIONS] 
-  Options 
-  LAST_MODIFIED: <date_spec> 
-  CREATED: <date_spec> 
-  MAX_SIZE:<size_spec> 
-  MIN_SIZE: <size_spec> 
-  SIZE: <size_spec|size_spec_ex> 
-  EXT:<list_of_extensions> 
-  TYPE: <type_list_spec> 
+**Example :**  
+  **PUSH WHITELIST**   
+  C:/  
+  d:/  
+  DONE  
+
+  CLEAR <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>    
+  Querying  
+  SEARCH <filename_part> [OPTIONS]  
+  Options  
+  LAST_MODIFIED: <date_spec>  
+  CREATED: <date_spec>  
+  MAX_SIZE:<size_spec>  
+  MIN_SIZE: <size_spec>  
+  SIZE: <size_spec|size_spec_ex>  
+  EXT:<list_of_extensions>  
+  TYPE: <type_list_spec>  
+ 
   date_spec :  
-  dd/mm/yyyy 
-  mm/yyyy 
-  yyyy 
-  yy 
-  SINCE LAST <number> <MINUTES|HOURS|DAYS|MONTHS|YEAR> 
-  <number> <MINUTES|HOURS|DAYS|MONTHS|YEAR> AGO 
-    BETWEEN <date_spec> AND <date_spec> 
+   dd/mm/yyyy 
+   mm/yyyy 
+   yyyy 
+   yy 
+ 
+  SINCE LAST <number> <MINUTES|HOURS|DAYS|MONTHS|YEAR>  
+  <number> <MINUTES|HOURS|DAYS|MONTHS|YEAR> AGO  
+    BETWEEN <date_spec> AND <date_spec>  
+   
     size_spec: 
-    <number><K|M|G>
+      <number><K|M|G>  
      
-    size_spec_ex : 
-      BETWEEN <size_spec> AND <size_spec> 
-      ext_list_spec : 
-      <ext>, <ext>, …. 
-      <ext> OR <ext> OR …. 
+---      
+      
+    size_spec_ex :  
+      BETWEEN <size_spec> AND <size_spec>  
+      
+---
+      
+    ext_list_spec :  
+      <ext>, <ext>, ….  
+      <ext> OR <ext> OR ….  
 
 ---
        
@@ -92,7 +101,9 @@ PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add>  DONE
       image : jpg,png,gif, …. 
       text: txt, html,..... 
       exe: exe, bat, sh 
-  
+ 
+---
+       
 **Example** 
         SEARCH "testme please" 
         LAST_MODIFIED:BETWEEN 2 days and 3 days 
