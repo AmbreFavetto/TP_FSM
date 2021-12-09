@@ -74,7 +74,8 @@ PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add>  DONE
   <number> <MINUTES|HOURS|DAYS|MONTHS|YEAR> AGO 
     BETWEEN <date_spec> AND <date_spec> 
     size_spec: 
-    <number><K|M|G> 
+    <number><K|M|G>
+     
     size_spec_ex : 
       BETWEEN <size_spec> AND <size_spec> 
       ext_list_spec : 
