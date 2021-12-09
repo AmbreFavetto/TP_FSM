@@ -19,9 +19,9 @@ class MainWindow : public QMainWindow {
         ~MainWindow() override;
 
     private slots:
-        void on_btnConnect_clicked();
-        void on_btnDisconnect_clicked();
-        void on_pushButton_clicked();
+        //void on_btnConnect_clicked();
+        //void on_btnDisconnect_clicked();
+        //void on_pushButton_clicked();
 
     private :
         Ui::MainWindow *ui;
