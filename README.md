@@ -42,23 +42,23 @@ __TABLE OF SERVER STATUSES__
 
 # Client Side
 __Indexer State & setup__ 
-INDEXER <STATUS|START|STOP|PAUSE|RESUME> 
-
-__Get status and Controls the indexing__ 
-GET <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> 
-ADD <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> <folder to add> 
-PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add>  DONE 
-
+INDEXER <STATUS|START|STOP|PAUSE|RESUME>  
+*Get status and Controls the indexing*
+GET <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  
+ADD <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> <folder to add>  
+PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add>  DONE  
 **Example :**  
   **PUSH WHITELIST**   
   C:/  
   d:/  
   DONE  
-
-  CLEAR <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>    
-  Querying  
-  SEARCH <filename_part> [OPTIONS]  
-  Options  
+ CLEAR <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> 
+ 
+ __Querying__  
+ SEARCH <filename_part> [OPTIONS] 
+ 
+ Options 
+ _______
   LAST_MODIFIED: <date_spec>  
   CREATED: <date_spec>  
   MAX_SIZE:<size_spec>  
@@ -67,27 +67,37 @@ PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add>  DONE
   EXT:<list_of_extensions>  
   TYPE: <type_list_spec>  
  
+ ---
+ 
   date_spec :  
+  __________
    dd/mm/yyyy 
    mm/yyyy 
    yyyy 
    yy 
  
-  SINCE LAST <number> <MINUTES|HOURS|DAYS|MONTHS|YEAR>  
-  <number> <MINUTES|HOURS|DAYS|MONTHS|YEAR> AGO  
-    BETWEEN <date_spec> AND <date_spec>  
+ ---
+ 
+ - SINCE LAST <number> <MINUTES|HOURS|DAYS|MONTHS|YEAR>  
+ - <number> <MINUTES|HOURS|DAYS|MONTHS|YEAR> AGO  
+ - BETWEEN <date_spec> AND <date_spec>  
+   
+---  
    
     size_spec: 
+    __________
       <number><K|M|G>  
      
 ---      
       
     size_spec_ex :  
+    _____________
       BETWEEN <size_spec> AND <size_spec>  
       
 ---
       
     ext_list_spec :  
+    _______________
       <ext>, <ext>, ….  
       <ext> OR <ext> OR ….  
 
@@ -95,6 +105,7 @@ PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add>  DONE
        
        
     type_list_spec : 
+    ________________
       <type>, <type>, …. 
       <type> OR <type> OR …. 
       type: 
@@ -104,7 +115,8 @@ PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add>  DONE
  
 ---
        
-**Example** 
+**Example : ** 
+  _________
         SEARCH "testme please" 
         LAST_MODIFIED:BETWEEN 2 days and 3 days 
         CREATED:31/12/2020 
