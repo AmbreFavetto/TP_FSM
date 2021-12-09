@@ -3,21 +3,21 @@
 ## Abstract
 
 The tool is composed of two parts : 
-The Indexing Server : a service running in the background which listens on port 7007 TCP (configurable).
-The indexing client : which communicates with the server to set it up, get informations on the index and make requests
+The __Indexing Server__ : a service running in the background which listens on port 7007 TCP (configurable).
+The __indexing client__ : which communicates with the server to set it up, get informations on the index and make requests
 The connection between the client & the server is continuous
 
 ## The server 
-On start, the service scans the StartFolder (usually a configurable drive) and builds a database with all the found files.
+On start, the service scans the **StartFolder** (usually a configurable drive) and builds a database with all the found files.
 
 ## The client
 Thanks to a specific dialect the client can get information, set up the server and make queries.
 
 ## Key Concept
-WHITELIST : prefered folder, should be indexed fist and more often
-BLACKLIST : never index these folders
-SKIPPED FILTERS : extensions to never index
-FILTERS : index only these extensions
+__WHITELIST__ : prefered folder, should be indexed fist and more often
+__BLACKLIST__ : never index these folders
+__SKIPPED FILTERS__ : extensions to never index
+__FILTERS__ : index only these extensions
 
 ## The Dialect
 # Common
@@ -30,31 +30,25 @@ When its status change the server send to the client the word status followed by
 
 e.g. STATUS INDEXING
 
-TABLE OF SERVER STATUSES
-status
-description
-INDEXING
-full indexation in progress
-READY
-indexation done
-STOPPED
-client stopped the indexing
-PAUSED
-client paused the indexing
-QUERYING
-a query is in progress
-RESULTS_AVAILABLE
-the query is finished and some results are waiting
+__TABLE OF SERVER STATUSES__
+|status|description|
+|--------|--------|
+|    INDEXING    |    full indexation in progress    |
+|    READY    |    indexation done    |
+|    STOPPED     |     client stopped the indexing    |    
+|   PAUSED    |   client paused the indexing    |
+|   QUERYING     |    a query is in progress     |
+|   RESULTS_AVAILABLE   |   the query is finished and some results are waiting     |
 
 # Client Side
-Indexer State & setup
+__Indexer State & setup__
 INDEXER <STATUS|START|STOP|PAUSE|RESUME>
-Get status and Controls the indexing
+__Get status and Controls the indexing__
 GET <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>
 ADD <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> <folder to add>
 PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add>  DONE
 
-Example :
+**Example :
 PUSH WHITELIST
 C:/
 d:/
@@ -103,4 +97,4 @@ MAX_SIZE:10M
 MIN_SIZE:1M 
 SIZE:BETWEEN 10M AND 20M 
 EXT:txt,doc,xlsx 
-TYPE:image OR text
+TYPE:image OR text**
