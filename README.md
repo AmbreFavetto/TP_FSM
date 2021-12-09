@@ -82,7 +82,7 @@ PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add>  DONE
       <ext>, <ext>, …. 
       <ext> OR <ext> OR …. 
 
-       ____
+       ---
        
        
     type_list_spec : 
