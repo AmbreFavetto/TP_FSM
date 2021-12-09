@@ -1,30 +1,30 @@
 # TP_FSM
 
-##Abstract
+## Abstract
 
 The tool is composed of two parts : 
 The Indexing Server : a service running in the background which listens on port 7007 TCP (configurable).
 The indexing client : which communicates with the server to set it up, get informations on the index and make requests
 The connection between the client & the server is continuous
 
-##The server 
+## The server 
 On start, the service scans the StartFolder (usually a configurable drive) and builds a database with all the found files.
 
-##The client
+## The client
 Thanks to a specific dialect the client can get information, set up the server and make queries.
 
-##Key Concept
+## Key Concept
 WHITELIST : prefered folder, should be indexed fist and more often
 BLACKLIST : never index these folders
 SKIPPED FILTERS : extensions to never index
 FILTERS : index only these extensions
 
-##The Dialect
-#Common
+## The Dialect
+# Common
 the dialect is case insensitive
 the dialect is full ASCII, the UTF8 characters are percent-encoded (url-encoded)
 
-#Server side
+# Server side
 STATUS
 When its status change the server send to the client the word status followed by the current status
 
@@ -46,7 +46,7 @@ a query is in progress
 RESULTS_AVAILABLE
 the query is finished and some results are waiting
 
-#Client Side
+# Client Side
 Indexer State & setup
 INDEXER <STATUS|START|STOP|PAUSE|RESUME>
 Get status and Controls the indexing
