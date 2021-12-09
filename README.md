@@ -49,53 +49,52 @@ ADD <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> <folder to add>
 PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add>  DONE
 
 **Example :**
-**PUSH WHITELIST**
-C:/
-d:/
-DONE
+  **PUSH WHITELIST**
+  C:/
+  d:/
+  DONE
 
-CLEAR <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> 
-Querying 
-SEARCH <filename_part> [OPTIONS] 
-Options 
-LAST_MODIFIED: <date_spec> 
-CREATED: <date_spec> 
-MAX_SIZE:<size_spec> 
-MIN_SIZE: <size_spec> 
-SIZE: <size_spec|size_spec_ex> 
-EXT:<list_of_extensions> 
-TYPE: <type_list_spec> 
-date_spec :  
-dd/mm/yyyy 
-mm/yyyy 
-yyyy 
-yy 
-SINCE LAST <number> <MINUTES|HOURS|DAYS|MONTHS|YEAR> 
-<number> <MINUTES|HOURS|DAYS|MONTHS|YEAR> AGO 
-BETWEEN <date_spec> AND <date_spec> 
-size_spec: 
-<number><K|M|G> 
-size_spec_ex : 
-BETWEEN <size_spec> AND <size_spec> 
-ext_list_spec : 
-<ext>, <ext>, …. 
-<ext> OR <ext> OR …. 
+  CLEAR <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> 
+  Querying 
+  SEARCH <filename_part> [OPTIONS] 
+  Options 
+  LAST_MODIFIED: <date_spec> 
+  CREATED: <date_spec> 
+  MAX_SIZE:<size_spec> 
+  MIN_SIZE: <size_spec> 
+  SIZE: <size_spec|size_spec_ex> 
+  EXT:<list_of_extensions> 
+  TYPE: <type_list_spec> 
+  date_spec :  
+  dd/mm/yyyy 
+  mm/yyyy 
+  yyyy 
+  yy 
+  SINCE LAST <number> <MINUTES|HOURS|DAYS|MONTHS|YEAR> 
+  <number> <MINUTES|HOURS|DAYS|MONTHS|YEAR> AGO 
+    BETWEEN <date_spec> AND <date_spec> 
+    size_spec: 
+    <number><K|M|G> 
+    size_spec_ex : 
+      BETWEEN <size_spec> AND <size_spec> 
+      ext_list_spec : 
+      <ext>, <ext>, …. 
+      <ext> OR <ext> OR …. 
 
-type_list_spec : 
-<type>, <type>, …. 
-<type> OR <type> OR …. 
-type: 
-image : jpg,png,gif, …. 
-text: txt, html,..... 
-exe: exe, bat, sh 
+    type_list_spec : 
+      <type>, <type>, …. 
+      <type> OR <type> OR …. 
+      type: 
+      image : jpg,png,gif, …. 
+      text: txt, html,..... 
+      exe: exe, bat, sh 
   
-Example 
-
-SEARCH "testme please" 
-LAST_MODIFIED:BETWEEN 2 days and 3 days 
-CREATED:31/12/2020 
-MAX_SIZE:10M 
-MIN_SIZE:1M  
-SIZE:BETWEEN 10M AND 20M  
-EXT:txt,doc,xlsx 
-TYPE:image OR text** 
+**Example** 
+        SEARCH "testme please" 
+        LAST_MODIFIED:BETWEEN 2 days and 3 days 
+        CREATED:31/12/2020 
+        MAX_SIZE:10M 
+        MIN_SIZE:1M  
+        SIZE:BETWEEN 10M AND 20M  
+        EXT:txt,doc,xlsx 
+        TYPE:image OR text** 
