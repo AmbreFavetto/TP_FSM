@@ -23,7 +23,9 @@ class MainWindow : public QMainWindow {
         //void on_btnDisconnect_clicked();
         //void on_pushButton_clicked();
 
-    private :
+        void on_btnSendCommand_clicked();
+
+private :
         Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

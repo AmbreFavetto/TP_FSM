@@ -3,39 +3,113 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QDebug>
+#include <QList>
 
-class fsm: public QMainWindow
+#include "parser.h"
+
+typedef std::function<void()> stateFn;
+class Fsm
+        //:public QMainWindow
 {
     Q_OBJECT
 
-    int m_current_state = 0;
+    // differents states of the fsm
+    enum states {
+        Initial,
+        CommandFound,
+        // Errors
+        ErrUnknownCmd,
 
-    enum Actions {
-        ADD     = 0,
-        PUSH    = 1,
-        CLEAR   = 2,
-        GET     = 3,
-        SEARCH  = 4,
-        INDEXER = 5,
-        UNDEFINED = 6
+        // Search
+        Search,
+        SearchFilenamePart,
+        SearchOptions,
+        SearchOptionLastModified,
+        SearchOptionCreated,
+        SearchOptionMaxSize,
+        SearchOptionMinSize,
+        SearchOptionSize,
+        SearchOptionExt,
+        SearchOptionType,
+        // Errors
+        ErrBadFilenamePart,
+        ErrUnknownSearchOption,
+
+        // Status
+        Status,
+        ServerStatus,
+        // Errors
+        ErrUnknownServerStatus,
+
+        // Indexer
+        Indexer,
+        IndexerCmd,
+        // Errors
+        ErrUnknownIndexerCmd,
+
+        // Clear
+        Clear,
+        ClearEntity,
+
+        // Get
+        Get,
+        GetEntity,
+
+        // Add
+        Add,
+        AddEntity,
+        AddEntityPath,
+        // Errors
+        ErrUnknownEntity,
+
+        // Push
+        Push,
+        PushEntity,
+        PushEntityPath,
+        PushEntityDone,
+        PushDone,
+        // Errors
+        ErrMissingOrBadPath
+
     };
+
+
+    QStringList listTokens;
+    QString currentToken;
+    states currentState;
+
+    QStringList correctActions = { "ADD", "PUSH", "CLEAR", "GET", "SEARCH", "INDEXER"};
+    QStringList correctFlags = { "WHITELIST","BLACKLIST","FILTERS","SKIPPED_FILTERSADD"};
+    QStringList correctOptions = { "STATUS","START","STOP","PAUSE","RESUME"};
+
+    QMap<QString, QVariant> values;
 
     public:
-        fsm();
-
-        //Flags isFlag(QString const& str);
-        Actions isAction(QString const& str);
-        bool isNumber(QString const& str);
-        bool isOperator(QString const& str);
-        bool isWord(QString const& str);
-
-        QStringList stringToList(QString line);
-
-        int current_state() const;
-
-        bool CheckState(int from, int to, bool condition);
+        Fsm();
 
 
-    };
+        //bool isNumber(QString const& str);
+        //bool isOperator(QString const& str);
+        //bool isWord(QString const& str);
+
+        void stringToList(QString line);
+
+        //int current_state() const;
+
+        //bool CheckState(int from, int to, bool condition);
+
+        bool isAction(QString const& str);
+        bool isFlag(QString const& str);
+        bool isOptions(QString const& str);
+
+        void createMapping(QStringList list);
+        void checkState(states previousState, states nextState, bool condition, stateFn fn);
+
+        const QMap<QString, QVariant> &getValues() const;
+        void setValues(const QMap<QString, QVariant> &newValues);
+
+        void setValue(QString key, QVariant value);
+        QVariant getValue(QString key);
+};
 
 #endif // FSM_H

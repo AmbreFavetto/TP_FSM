@@ -9,19 +9,23 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    actionfactory.cpp \
+    actions.cpp \
     fsm.cpp \
     indexer.cpp \
     main.cpp \
     mainwindow.cpp \
     myclient.cpp \
-    parser.cpp
+    tactions.cpp
 
 HEADERS += \
+    actionfactory.h \
+    actions.h \
     fsm.h \
     indexer.h \
     mainwindow.h \
     myclient.h \
-    parser.h
+    tactions.h
 
 FORMS += \
     mainwindow.ui
