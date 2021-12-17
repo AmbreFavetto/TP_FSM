@@ -68,6 +68,14 @@ void Fsm::createMapping(QStringList list)
     while(listIterator != list.end()) {
         currentToken = *listIterator;
         // Search
+        checkState(CommandFound, Search, currentToken.toUpper()=="SEARCH", [=](){setValue("cmd", currentToken.toUpper());});
+        checkState(Search, SearchFilenamePart, !currentToken.isEmpty(), [=](){setValue("filenamePart", currentToken);});
+        checkState(SearchFilenamePart, SearchOptionLastModified, currentToken.toUpper()=="LAST_MODIFIED", [=](){setValue("option", currentToken.toUpper());});
+        checkState(SearchFilenamePart, SearchOptionCreated, currentToken.toUpper()=="CREATED", [=](){setValue("option", currentToken.toUpper());});
+        checkState(SearchFilenamePart, SearchOptionMaxSize, currentToken.toUpper()=="MAX_SIZE", [=](){setValue("option", currentToken.toUpper());});
+        checkState(SearchFilenamePart, SearchOptionSize, currentToken.toUpper()=="SIZE", [=](){setValue("option", currentToken.toUpper());});
+        checkState(SearchFilenamePart, SearchOptionExt, currentToken.toUpper()=="EXT", [=](){setValue("option", currentToken.toUpper());});
+        checkState(SearchFilenamePart, SearchOptionType, currentToken.toUpper()=="TYPE", [=](){setValue("option", currentToken.toUpper());});
 
         // Status
         checkState(CommandFound, Status, currentToken.toUpper()=="STATUS", [=](){setValue("cmd", currentToken.toUpper());});
@@ -110,8 +118,7 @@ void Fsm::createMapping(QStringList list)
         checkState(Add, AddEntity, currentToken.toUpper() == "BLACKLIST", [=](){setValue("flag", currentToken.toUpper());});
         checkState(Add, AddEntity, currentToken.toUpper() == "FILTERS", [=](){setValue("flag", currentToken.toUpper());});
         checkState(Add, AddEntity, currentToken.toUpper() == "SKIPPED_FILTERS", [=](){setValue("flag", currentToken.toUpper());});
-        // TODO - quoi mettre si c'est un fichier ??
-        //checkState(AddEntity, AddEntityPath, currentToken, [=](){setValue("path", currentToken);});
+        checkState(AddEntity, AddEntityPath, !currentToken.isEmpty(), [=](){setValue("path", currentToken);});
 
         // Push
         checkState(CommandFound, Push, currentToken.toUpper()=="PUSH", [=](){setValue("cmd", currentToken.toUpper());});
@@ -120,8 +127,7 @@ void Fsm::createMapping(QStringList list)
         checkState(Push, PushEntity, currentToken.toUpper() == "BLACKLIST", [=](){setValue("flag", currentToken.toUpper());});
         checkState(Push, PushEntity, currentToken.toUpper() == "FILTERS", [=](){setValue("flag", currentToken.toUpper());});
         checkState(Push, PushEntity, currentToken.toUpper() == "SKIPPED_FILTERS", [=](){setValue("flag", currentToken.toUpper());});
-        // TODO - quoi mettre si c'est un fichier ??
-        //checkState(PushEntity, PushEntityPath, currentToken, [=](){setValue("path", currentToken);});
+        checkState(PushEntity, PushEntityPath, !currentToken.isEmpty(), [=](){setValue("path", currentToken);});
         checkState(PushEntityPath, PushDone, currentToken.toUpper() == "DONE", [=](){setValue("end", currentToken.toUpper());});
 
         listIterator ++;

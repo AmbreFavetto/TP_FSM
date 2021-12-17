@@ -23,7 +23,6 @@ class Fsm
         // Search
         Search,
         SearchFilenamePart,
-        SearchOptions,
         SearchOptionLastModified,
         SearchOptionCreated,
         SearchOptionMaxSize,
