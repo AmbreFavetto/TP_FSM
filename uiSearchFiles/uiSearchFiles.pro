@@ -1,4 +1,4 @@
-QT       += core gui network
+QT       += core gui network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     actionfactory.cpp \
     actions.cpp \
+    bddrequest.cpp \
     fsm.cpp \
     indexer.cpp \
     main.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 HEADERS += \
     actionfactory.h \
     actions.h \
+    bddrequest.h \
     fsm.h \
     indexer.h \
     mainwindow.h \

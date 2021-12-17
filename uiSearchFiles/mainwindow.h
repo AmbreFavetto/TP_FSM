@@ -13,10 +13,13 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow {
     Q_OBJECT
     myclient *_client = nullptr;
-
+    QString path;
+    QString command;
     public:
         MainWindow(QWidget *parent = nullptr);
         ~MainWindow() override;
+        void getUserPath();
+        void getUserCmd();
 
     private slots:
         //void on_btnConnect_clicked();
