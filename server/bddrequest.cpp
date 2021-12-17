@@ -116,7 +116,6 @@ int bddRequest::directoryIterator(QString dirPathName){
         QFile file(it.next());
         //QFile file(name); //QString to QFile
         QFileInfo fileInfo(file); //QFile to QFileInfo
-        qDebug() << fileInfo.fileName();
         if(fileInfo.isFile()){
             qDebug() << fileInfo.fileName();
             qDebug() << fileInfo.birthTime().date().toString();
