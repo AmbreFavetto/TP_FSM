@@ -66,7 +66,7 @@ int bddRequest::addRow(QStringList data){
     db.open();
     db.transaction();
     QSqlQuery query;
-    query.prepare("INSERT INTO tableFilesCreate (name, date_creation, date_modification, size, type)"
+    query.prepare("INSERT INTO files (name, date_creation, date_modification, size, type)"
                           "VALUES(:name, :date_creation, :date_modification, :size, :type)");
 
     /* Debut timer */
@@ -93,39 +93,26 @@ int bddRequest::addRow(QStringList data){
 
 int bddRequest::extractFileInfo(QFileInfo file) {
     QStringList fileInfos;
-    fileInfos[0]= file.fileName(); //QString
-    fileInfos[1]= file.birthTime().date().toString(); //QDateTime to QDate to QString
-    fileInfos[2]= file.lastModified().date().toString(); //QDateTime to QDate to QString
-    fileInfos[3]= QString::number(file.size()); //qint64 to QString
-    fileInfos[4]= file.suffix(); //QString
+    fileInfos.append(file.fileName()); //QString
+    fileInfos.append(file.birthTime().date().toString()); //QDateTime to QDate to QString
+    fileInfos.append(file.lastModified().date().toString()); //QDateTime to QDate to QString
+    fileInfos.append(QString::number(file.size())); //qint64 to QString
+    fileInfos.append(file.suffix()); //QString
     int a = addRow(fileInfos);
     return a;
 }
 
 
 int bddRequest::directoryIterator(QString dirPathName){
-    QString name;
-    //qDebug() << dirPathName;
-    QString dir= dirPathName;
-    //qDebug() << dir.dirName();
-    QDirIterator it(dir, QDirIterator::Subdirectories);
-    //qDebug() << it.fileName();
-    //qDebug() << "coucou5";
-    while(it.hasNext()){
-        //qDebug() << "coucou6";
-        QFile file(it.next());
-        //QFile file(name); //QString to QFile
-        QFileInfo fileInfo(file); //QFile to QFileInfo
-        if(fileInfo.isFile()){
-            qDebug() << fileInfo.fileName();
-            qDebug() << fileInfo.birthTime().date().toString();
-            qDebug() << fileInfo.lastModified().date().toString();
-            qDebug() << QString::number(fileInfo.size());
-            qDebug() << fileInfo.suffix();
-           extractFileInfo(fileInfo);
 
+    QString dir= dirPathName;
+    QDirIterator it(dir, QDirIterator::Subdirectories);
+    while(it.hasNext()){
+        QFile file(it.next());
+        QFileInfo fileInfo(file);
+        if(fileInfo.isFile()){
+           extractFileInfo(fileInfo);
         }
-        //else directoryIterator(name);
     }
     return 0;
 }
