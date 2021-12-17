@@ -11,7 +11,7 @@ qDebug() << "coucou";
     bddRequest * db = new bddRequest();
 
     db->setupDatabase();
-    QString location = "C:/Users/Leval/TPDevLogicielAvance/";
+    QString location = "D:/Ynov/DevLogiciel/TP2_Research_test/";
     db->directoryIterator(location);
     return a.exec();
 }

@@ -106,23 +106,27 @@ int bddRequest::extractFileInfo(QFileInfo file) {
 int bddRequest::directoryIterator(QString dirPathName){
     QString name;
     //qDebug() << dirPathName;
-    QDir dir(dirPathName);
+    QString dir= dirPathName;
     //qDebug() << dir.dirName();
-    QDirIterator it(dir);
+    QDirIterator it(dir, QDirIterator::Subdirectories);
     //qDebug() << it.fileName();
     //qDebug() << "coucou5";
     while(it.hasNext()){
         //qDebug() << "coucou6";
         QFile file(it.next());
-        //qDebug() << name;//ou .path();
-        //qDebug() << "coucou7";
         //QFile file(name); //QString to QFile
         QFileInfo fileInfo(file); //QFile to QFileInfo
         qDebug() << fileInfo.fileName();
         if(fileInfo.isFile()){
+            qDebug() << fileInfo.fileName();
+            qDebug() << fileInfo.birthTime().date().toString();
+            qDebug() << fileInfo.lastModified().date().toString();
+            qDebug() << QString::number(fileInfo.size());
+            qDebug() << fileInfo.suffix();
            extractFileInfo(fileInfo);
+
         }
-        else directoryIterator(name);
+        //else directoryIterator(name);
     }
     return 0;
 }

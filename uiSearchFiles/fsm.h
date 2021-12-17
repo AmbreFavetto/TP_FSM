@@ -11,7 +11,7 @@ typedef std::function<void()> stateFn;
 class Fsm
         //:public QMainWindow
 {
-    Q_OBJECT
+    //Q_OBJECT
 
     // differents states of the fsm
     enum states {

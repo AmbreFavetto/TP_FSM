@@ -15,8 +15,7 @@ SOURCES += \
     indexer.cpp \
     main.cpp \
     mainwindow.cpp \
-    myclient.cpp \
-    tactions.cpp
+    myclient.cpp
 
 HEADERS += \
     actionfactory.h \
