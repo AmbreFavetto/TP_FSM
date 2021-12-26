@@ -101,10 +101,10 @@ class LIBRARYFSM_EXPORT LibraryFsm
     QString currentToken;
     states currentState;
 
-    QStringList correctActions = { "ADD", "PUSH", "CLEAR", "GET", "SEARCH", "INDEXER"};
-    QStringList correctFlags = { "WHITELIST","BLACKLIST","FILTERS","SKIPPED_FILTERSADD"};
+    QStringList correctCmd = { "ADD", "PUSH", "CLEAR", "GET", "SEARCH", "INDEXER"};
+    QStringList correctFlags = { "WHITELIST","BLACKLIST","FILTERS","SKIPPED_FILTERS"};
     QStringList correctStatus = { "INDEXING","READY","STOPPED","PAUSED","QUERYING", "RESULTS_AVAILABLE"};
-    QStringList correctOptions = { "STATUS","START","STOP","PAUSE","RESUME"};
+    QStringList correctActions = { "STATUS","START","STOP","PAUSE","RESUME"};
 
     QStringList correctTimes = {"MINUTES","HOURS","DAYS","MONTHS","YEAR"};
     QMap<QString, QVariant> values;
@@ -114,10 +114,10 @@ class LIBRARYFSM_EXPORT LibraryFsm
 
         void stringToList(QString line);
 
-        bool isAction(QString const& str);
+        bool isCmd(QString const& str);
         bool isFlag(QString const& str);
         bool isStatus(QString const& str);
-        bool isOption(QString const& str);
+        bool isAction(QString const& str);
 
         bool isDate(QString const& str);
         bool isNumber(QString const& str);

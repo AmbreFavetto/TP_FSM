@@ -1,7 +1,7 @@
 #ifndef ACTIONS_H
 #define ACTIONS_H
 
-#include "fsm.h"
+#include "../libraryFsm/libraryfsm.h"
 
 #include <QString>
 #include <QDebug>
@@ -12,7 +12,7 @@ class Actions
     QString _type;
 
 protected:
-    Fsm * _fsm = nullptr;
+    LibraryFsm * _fsm = nullptr;
 
 public:
     Actions() {
@@ -37,7 +37,7 @@ public:
        _type = type;
    }
 
-   void setFsm(Fsm * fsm) {
+   void setFsm(LibraryFsm * fsm) {
         _fsm = fsm;
    }
 

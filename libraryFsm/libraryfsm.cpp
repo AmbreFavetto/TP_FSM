@@ -41,15 +41,15 @@ void LibraryFsm::setValue(QString key, QVariant value)
 
 
 // "ADD", "PUSH", "CLEAR", "GET", "SEARCH", "INDEXER"
-bool LibraryFsm::isAction(const QString &str)
+bool LibraryFsm::isCmd(const QString &str)
 {
-    if(correctActions.contains(str)) return true;
+    if(correctCmd.contains(str)) return true;
 
     return false;
 
 }
 
-// "WHITELIST","BLACKLIST","FILTERS","SKIPPED_FILTERSADD"
+// "WHITELIST","BLACKLIST","FILTERS","SKIPPED_FILTERS"
 bool LibraryFsm::isFlag(const QString &str)
 {
     if(correctFlags.contains(str)) return true;
@@ -66,16 +66,16 @@ bool LibraryFsm::isStatus(const QString &str)
 }
 
 // "STATUS","START","STOP","PAUSE","RESUME"
-bool LibraryFsm::isOption(const QString &str)
+bool LibraryFsm::isAction(const QString &str)
 {
-    if(correctOptions.contains(str)) return true;
+    if(correctActions.contains(str)) return true;
 
     return false;
 }
 
 bool LibraryFsm::isDate(const QString &str)
 {
-    if(str == "dd/mm/yyyy") {
+    if(str == "dd/mm/yyyy" || str == "yyyy") {
         return true;
     }
     return false;
@@ -94,6 +94,9 @@ bool LibraryFsm::isNumber(const QString &str)
 
 bool LibraryFsm::isNumberType(const QString &str)
 {
+    if( str == "5M" || str == "6G") {
+        return true;
+    }
     return false;
 }
 
@@ -147,7 +150,7 @@ void LibraryFsm::createMapping(QStringList list)
         checkState(SearchOptionNumberTime, SearchOptionNumberTimeAgo, currentToken.toUpper()=="AGO", [=](){setValue("ago", currentToken.toUpper());});
         checkState(SearchOptionBetween, SearchOptionBetweenSimpleDate, isDate(currentToken), [=](){setValue("date", currentToken);});
         checkState(SearchOptionBetweenSimpleDate, SearchOptionBetweenSimpleDateAnd, currentToken.toUpper()=="AND", [=](){setValue("and", currentToken.toUpper());});
-        checkState(SearchOptionBetweenSimpleDateAnd, SearchOptionBetweenSimpleDateAndSimpleDate, isDate(currentToken), [=](){setValue("date", currentToken);});
+        checkState(SearchOptionBetweenSimpleDateAnd, SearchOptionBetweenSimpleDateAndSimpleDate, isDate(currentToken), [=](){setValue("date2", currentToken);});
         //      ~MAX_SIZE
         checkState(SearchFilenamePart, SearchOptionMaxSize, currentToken.toUpper()=="MAX_SIZE", [=](){setValue("option", currentToken.toUpper());});
         checkState(SearchOptionMaxSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("number", currentToken);});
@@ -156,28 +159,28 @@ void LibraryFsm::createMapping(QStringList list)
         checkState(SearchOptionMinSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("number", currentToken);});
         //      ~SIZE
         checkState(SearchFilenamePart, SearchOptionSize, currentToken.toUpper()=="SIZE", [=](){setValue("option", currentToken.toUpper());});
-        checkState(SearchOptionSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("type", currentToken);});
+        checkState(SearchOptionSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("number", currentToken);});
 
-        checkState(SearchOptionSize, SearchOptionSizeBetween, currentToken.toUpper()=="BETWEEN", [=](){setValue("elt", currentToken.toUpper());});
-        checkState(SearchOptionSizeBetween, SearchOptionSizeBetweenNumberType, isNumberType(currentToken.toUpper()), [=](){setValue("type", currentToken.toUpper());});
-        checkState(SearchOptionSizeBetweenNumberType, SearchOptionSizeBetweenNumberTypeAnd, currentToken.toUpper()=="AND", [=](){setValue("elt", currentToken.toUpper());});
-        checkState(SearchOptionSizeBetweenNumberTypeAnd, SearchOptionSizeBetweenNumberTypeAndNumberType, isNumberType(currentToken.toUpper()), [=](){setValue("type", currentToken.toUpper());});
-        //      ~EXT
+        checkState(SearchOptionSize, SearchOptionSizeBetween, currentToken.toUpper()=="BETWEEN", [=](){setValue("between", currentToken.toUpper());});
+        checkState(SearchOptionSizeBetween, SearchOptionSizeBetweenNumberType, isNumberType(currentToken.toUpper()), [=](){setValue("numberType", currentToken.toUpper());});
+        checkState(SearchOptionSizeBetweenNumberType, SearchOptionSizeBetweenNumberTypeAnd, currentToken.toUpper()=="AND", [=](){setValue("and", currentToken.toUpper());});
+        checkState(SearchOptionSizeBetweenNumberTypeAnd, SearchOptionSizeBetweenNumberTypeAndNumberType, isNumberType(currentToken.toUpper()), [=](){setValue("numberType2", currentToken.toUpper());});
+        //      ~EXT    ???
         checkState(SearchFilenamePart, SearchOptionExt, currentToken.toUpper()=="EXT", [=](){setValue("option", currentToken.toUpper());});
         checkState(SearchOptionExt, SearchOptionExtExt, isExt(currentToken), [=](){setValue("ext", currentToken);});
         checkState(SearchOptionExtExt, SearchOptionExtExt, isExt(currentToken), [=](){setValue("ext", currentToken);});
         checkState(SearchOptionExtExt, SearchOptionExtExtOr, currentToken.toUpper()=="OR", [=](){setValue("elt", currentToken.toUpper());});
-        //      ~TYPE
+        //      ~TYPE   ???
         checkState(SearchFilenamePart, SearchOptionType, currentToken.toUpper()=="TYPE", [=](){setValue("option", currentToken.toUpper());});
         checkState(SearchOptionType, SearchOptionTypeType, isType(currentToken), [=](){setValue("type", currentToken);});
         checkState(SearchOptionTypeType, SearchOptionTypeType, isType(currentToken), [=](){setValue("type", currentToken);});
         checkState(SearchOptionTypeType, SearchOptionTypeTypeOr, currentToken.toUpper()=="OR", [=](){setValue("elt", currentToken.toUpper());});
-        // Status
-        checkState(CommandFound, Status, currentToken.toUpper()=="STATUS", [=](){setValue("cmd", currentToken.toUpper());});
-        checkState(Status, ServerStatus, isStatus(currentToken.toUpper()), [=](){setValue("serverStatus", currentToken.toUpper());});
+        // Status -- ???
+        //checkState(CommandFound, Status, currentToken.toUpper()=="STATUS", [=](){setValue("cmd", currentToken.toUpper());});
+        //checkState(Status, ServerStatus, isStatus(currentToken.toUpper()), [=](){setValue("serverStatus", currentToken.toUpper());});
         // Indexer
         checkState(CommandFound, Indexer, currentToken.toUpper()=="INDEXER", [=](){setValue("cmd", currentToken.toUpper());});
-        checkState(Indexer, IndexerCmd, isOption(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
+        checkState(Indexer, IndexerCmd, isAction(currentToken.toUpper()), [=](){setValue("action", currentToken.toUpper());});
         // Clear
         checkState(CommandFound, Clear, currentToken.toUpper()=="CLEAR", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Clear, ClearEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
@@ -187,12 +190,12 @@ void LibraryFsm::createMapping(QStringList list)
         // Add
         checkState(CommandFound, Add, currentToken.toUpper()=="ADD", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Add, AddEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
-        checkState(AddEntity, AddEntityPath, !currentToken.isEmpty(), [=](){setValue("path", currentToken);});
-        // Push
+        checkState(AddEntity, AddEntityPath, !currentToken.isEmpty() && !isFlag(currentToken), [=](){setValue("path", currentToken);});
+        // Push     ???
         checkState(CommandFound, Push, currentToken.toUpper()=="PUSH", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Push, PushEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
-        checkState(PushEntity, PushEntityPath, !currentToken.isEmpty(), [=](){setValue("path", currentToken);});
-        checkState(PushEntityPath, PushEntityPath, !currentToken.isEmpty(), [=](){setValue("path", currentToken);});
+        checkState(PushEntity, PushEntityPath, !currentToken.isEmpty() && !isFlag(currentToken), [=](){setValue("path", currentToken);});
+        checkState(PushEntityPath, PushEntityPath, !currentToken.isEmpty()  && !isFlag(currentToken) && currentToken != "DONE", [=](){setValue("path", currentToken);});
         checkState(PushEntityPath, PushDone, currentToken.toUpper() == "DONE", [=](){setValue("done", currentToken.toUpper());});
 
         listIterator ++;
@@ -202,7 +205,7 @@ void LibraryFsm::createMapping(QStringList list)
 
 void LibraryFsm::checkState(states previousState, states nextState, bool condition, stateFn fn)
 {
-    qDebug() << __FUNCTION__ << currentToken << currentState ;
+    //qDebug() << __FUNCTION__ << currentToken << currentState ;
     if(currentState==previousState && condition) {
         currentState=nextState;
         fn();

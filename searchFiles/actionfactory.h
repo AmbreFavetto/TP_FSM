@@ -2,7 +2,6 @@
 #define ACTIONFACTORY_H
 
 #include "tactions.h"
-#include "fsm.h"
 
 class ActionFactory
 {
