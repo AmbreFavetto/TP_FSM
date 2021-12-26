@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    server \
-    uiSearchFiles
+    libraryFsm \
+    searchFiles \
+    testSearchFiles

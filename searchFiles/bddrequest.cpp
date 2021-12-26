@@ -6,7 +6,7 @@
 
 bddRequest::bddRequest()
 {
-
+    setupDatabase();
 }
 
 int bddRequest::setupDatabase(){

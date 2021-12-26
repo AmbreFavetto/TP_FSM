@@ -1,0 +1,12 @@
+#ifndef LIBRARYFSM_GLOBAL_H
+#define LIBRARYFSM_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(LIBRARYFSM_LIBRARY)
+#  define LIBRARYFSM_EXPORT Q_DECL_EXPORT
+#else
+#  define LIBRARYFSM_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // LIBRARYFSM_GLOBAL_H

@@ -1,15 +1,13 @@
-#ifndef FSM_H
-#define FSM_H
+#ifndef LIBRARYFSM_H
+#define LIBRARYFSM_H
 
 #include <QtWidgets/QMainWindow>
 #include <QDebug>
 #include <QList>
-
-#include "parser.h"
+#include "libraryFsm_global.h"
 
 typedef std::function<void()> stateFn;
-class Fsm
-        //:public QMainWindow
+class LIBRARYFSM_EXPORT LibraryFsm
 {
     //Q_OBJECT
 
@@ -25,11 +23,37 @@ class Fsm
         SearchFilenamePart,
         SearchOptionLastModified,
         SearchOptionCreated,
+
+        SearchOptionSimpleDate,
+        SearchOptionSince,
+        SearchOptionSinceLast,
+        SearchOptionSinceLastNumber,
+        SearchOptionSinceLastNumberTime,
+        SearchOptionNumber,
+        SearchOptionNumberTime,
+        SearchOptionNumberTimeAgo,
+        SearchOptionBetween,
+        SearchOptionBetweenSimpleDate,
+        SearchOptionBetweenSimpleDateAnd,
+        SearchOptionBetweenSimpleDateAndSimpleDate,
+
         SearchOptionMaxSize,
         SearchOptionMinSize,
         SearchOptionSize,
+        SearchOptionSizeNumberType,
+        SearchOptionSizeBetween,
+        SearchOptionSizeBetweenNumberType,
+        SearchOptionSizeBetweenNumberTypeAnd,
+        SearchOptionSizeBetweenNumberTypeAndNumberType,
+
         SearchOptionExt,
+        SearchOptionExtExt,
+        SearchOptionExtExtOr,
+
         SearchOptionType,
+        SearchOptionTypeType,
+        SearchOptionTypeTypeOr,
+
         // Errors
         ErrBadFilenamePart,
         ErrUnknownSearchOption,
@@ -79,27 +103,28 @@ class Fsm
 
     QStringList correctActions = { "ADD", "PUSH", "CLEAR", "GET", "SEARCH", "INDEXER"};
     QStringList correctFlags = { "WHITELIST","BLACKLIST","FILTERS","SKIPPED_FILTERSADD"};
+    QStringList correctStatus = { "INDEXING","READY","STOPPED","PAUSED","QUERYING", "RESULTS_AVAILABLE"};
     QStringList correctOptions = { "STATUS","START","STOP","PAUSE","RESUME"};
 
+    QStringList correctTimes = {"MINUTES","HOURS","DAYS","MONTHS","YEAR"};
     QMap<QString, QVariant> values;
 
     public:
-        Fsm();
-
-
-        //bool isNumber(QString const& str);
-        //bool isOperator(QString const& str);
-        //bool isWord(QString const& str);
+        LibraryFsm();
 
         void stringToList(QString line);
 
-        //int current_state() const;
-
-        //bool CheckState(int from, int to, bool condition);
-
         bool isAction(QString const& str);
         bool isFlag(QString const& str);
-        bool isOptions(QString const& str);
+        bool isStatus(QString const& str);
+        bool isOption(QString const& str);
+
+        bool isDate(QString const& str);
+        bool isNumber(QString const& str);
+        bool isNumberType(QString const& str);
+        bool isTime(QString const& str);
+        bool isExt(QString const& str);
+        bool isType(QString const& str);
 
         void createMapping(QStringList list);
         void checkState(states previousState, states nextState, bool condition, stateFn fn);
@@ -109,6 +134,8 @@ class Fsm
 
         void setValue(QString key, QVariant value);
         QVariant getValue(QString key);
+
+        QStringList getListTokens();
 };
 
-#endif // FSM_H
+#endif // LIBRARYFSM_H

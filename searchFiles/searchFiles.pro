@@ -10,25 +10,25 @@ CONFIG += c++11
 
 SOURCES += \
     actionfactory.cpp \
-    actions.cpp \
     bddrequest.cpp \
     fsm.cpp \
+    helpwindow.cpp \
     indexer.cpp \
     main.cpp \
-    mainwindow.cpp \
-    myclient.cpp
+    mainwindow.cpp
 
 HEADERS += \
     actionfactory.h \
     actions.h \
     bddrequest.h \
     fsm.h \
+    helpwindow.h \
     indexer.h \
     mainwindow.h \
-    myclient.h \
     tactions.h
 
 FORMS += \
+    helpwindow.ui \
     mainwindow.ui
 
 # Default rules for deployment.

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "helpwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -13,7 +14,16 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow();    
+    HelpWindow helpWindow;
+
+    QString getPath();
+    QString getCmd();
+
+private slots:
+    void on_btnBrowse_clicked();
+    void on_btnSendCommand_clicked();
+    void on_btnInfos_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -2,12 +2,13 @@
 
 #include <QDebug>
 
+// créer objet actionfactory
+// chaque state final créer objet factory : factory = new Add()
 
 Fsm::Fsm()
 {
 
 }
-
 
 // Split the sentence written by the user into several tokens
 void Fsm::stringToList(QString line)
@@ -31,11 +32,17 @@ QVariant Fsm::getValue(QString key)
     return values[key];
 }
 
+QStringList Fsm::getListTokens()
+{
+    return listTokens;
+}
+
 void Fsm::setValue(QString key, QVariant value)
 {
     //values[key] = value;
     values.insert(key, value);
 }
+
 
 // "ADD", "PUSH", "CLEAR", "GET", "SEARCH", "INDEXER"
 bool Fsm::isAction(const QString &str)
@@ -54,12 +61,51 @@ bool Fsm::isFlag(const QString &str)
     return false;
 }
 
+// "INDEXING","READY","STOPPED","PAUSED","QUERYING", "RESULTS_AVAILABLE"
+bool Fsm::isStatus(const QString &str)
+{
+    if(correctStatus.contains(str)) return true;
+
+    return false;
+}
+
 // "STATUS","START","STOP","PAUSE","RESUME"
-bool Fsm::isOptions(const QString &str)
+bool Fsm::isOption(const QString &str)
 {
     if(correctOptions.contains(str)) return true;
 
     return false;
+}
+
+bool Fsm::isDate(const QString &str)
+{
+    return true;
+}
+
+bool Fsm::isNumber(const QString &str)
+{
+    return true;
+
+}
+
+bool Fsm::isNumberType(const QString &str)
+{
+    return true;
+}
+
+bool Fsm::isTime(const QString &str)
+{
+    return true;
+}
+
+bool Fsm::isExt(const QString &str)
+{
+    return true;
+}
+
+bool Fsm::isType(const QString &str)
+{
+    return true;
 }
 
 void Fsm::createMapping(QStringList list)
@@ -67,25 +113,25 @@ void Fsm::createMapping(QStringList list)
     auto listIterator = list.begin();
     currentToken = *listIterator;
     while(listIterator != list.end()) {
+        qDebug() << "create mapping";
         currentToken = *listIterator;
-
         // SEARCH
         checkState(CommandFound, Search, currentToken.toUpper()=="SEARCH", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Search, SearchFilenamePart, !currentToken.isEmpty(), [=](){setValue("filenamePart", currentToken);});
         //      ~LAST_MODIFIED
         checkState(SearchFilenamePart, SearchOptionLastModified, currentToken.toUpper()=="LAST_MODIFIED", [=](){setValue("option", currentToken.toUpper());});
         checkState(SearchOptionLastModified, SearchOptionSimpleDate, isDate(currentToken), [=](){setValue("date", currentToken);});
-        checkState(SearchOptionLastModified, SearchOptionSince, currentToken.toUpper()=="SINCE", [=](){setValue("elt", currentToken.toUpper());});
+        checkState(SearchOptionLastModified, SearchOptionSince, currentToken.toUpper()=="SINCE", [=](){setValue("since", currentToken.toUpper());});
         checkState(SearchOptionLastModified, SearchOptionNumber, isNumber(currentToken), [=](){setValue("number", currentToken);});
-        checkState(SearchOptionLastModified, SearchOptionBetween, currentToken.toUpper()=="BETWEEN", [=](){setValue("elt", currentToken.toUpper());});
+        checkState(SearchOptionLastModified, SearchOptionBetween, currentToken.toUpper()=="BETWEEN", [=](){setValue("between", currentToken.toUpper());});
         //      ~CREATED
         checkState(SearchFilenamePart, SearchOptionCreated, currentToken.toUpper()=="CREATED", [=](){setValue("option", currentToken.toUpper());});
         checkState(SearchOptionCreated, SearchOptionSimpleDate, isDate(currentToken), [=](){setValue("date", currentToken);});
-        checkState(SearchOptionCreated, SearchOptionSince, currentToken.toUpper()=="SINCE", [=](){setValue("elt", currentToken.toUpper());});
+        checkState(SearchOptionCreated, SearchOptionSince, currentToken.toUpper()=="SINCE", [=](){setValue("since", currentToken.toUpper());});
         checkState(SearchOptionCreated, SearchOptionNumber, isNumber(currentToken), [=](){setValue("number", currentToken);});
-        checkState(SearchOptionCreated, SearchOptionBetween, currentToken.toUpper()=="BETWEEN", [=](){setValue("elt", currentToken.toUpper());});
+        checkState(SearchOptionCreated, SearchOptionBetween, currentToken.toUpper()=="BETWEEN", [=](){setValue("between", currentToken.toUpper());});
         //      ~LAST_MODIFIED & CREATED
-        checkState(SearchOptionSince, SearchOptionSinceLast, currentToken.toUpper()=="LAST", [=](){setValue("elt", currentToken.toUpper());});
+        checkState(SearchOptionSince, SearchOptionSinceLast, currentToken.toUpper()=="LAST", [=](){setValue("last", currentToken.toUpper());});
         checkState(SearchOptionSinceLast, SearchOptionSinceLastNumber, isNumber(currentToken), [=](){setValue("number", currentToken);});
         checkState(SearchOptionSinceLastNumber, SearchOptionSinceLastNumberTime, isTime(currentToken.toUpper()), [=](){setValue("time", currentToken.toUpper());});
         checkState(SearchOptionNumber, SearchOptionNumberTime, isTime(currentToken), [=](){setValue("time", currentToken);});
@@ -95,21 +141,18 @@ void Fsm::createMapping(QStringList list)
         checkState(SearchOptionBetweenSimpleDateAnd, SearchOptionBetweenSimpleDateAndSimpleDate, isDate(currentToken), [=](){setValue("date", currentToken);});
         //      ~MAX_SIZE
         checkState(SearchFilenamePart, SearchOptionMaxSize, currentToken.toUpper()=="MAX_SIZE", [=](){setValue("option", currentToken.toUpper());});
-        checkState(SearchOptionMaxSize, SearchOptionSizeNumber, isNumber(currentToken), [=](){setValue("number", currentToken);});
+        checkState(SearchOptionMaxSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("number", currentToken);});
         //      ~MIN_SIZE
         checkState(SearchFilenamePart, SearchOptionMinSize, currentToken.toUpper()=="MIN_SIZE", [=](){setValue("option", currentToken.toUpper());});
-        checkState(SearchOptionMinSize, SearchOptionSizeNumber, isNumber(currentToken), [=](){setValue("number", currentToken);});
+        checkState(SearchOptionMinSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("number", currentToken);});
         //      ~SIZE
-        checkState(SearchOptionSize, SearchOptionSizeBetween, currentToken.toUpper()=="BETWEEN", [=](){setValue("elt", currentToken.toUpper());});
-        checkState(SearchOptionSizeBetween, SearchOptionSizeBetweenNumber, isNumber(currentToken), [=](){setValue("number", currentToken);});
-        checkState(SearchOptionSizeBetweenNumber, SearchOptionSizeBetweenNumberType, isType(currentToken.toUpper()), [=](){setValue("type", currentToken.toUpper());});
-        checkState(SearchOptionSizeBetweenNumberType, SearchOptionSizeBetweenNumberTypeAnd, currentToken.toUpper()=="AND", [=](){setValue("elt", currentToken.toUpper());});
-        checkState(SearchOptionSizeBetweenNumberTypeAnd, SearchOptionSizeBetweenNumberTypeAndNumber, isNumber(currentToken), [=](){setValue("number", currentToken);});
-        checkState(SearchOptionSizeBetweenNumberTypeAndNumber, SearchOptionSizeBetweenNumberTypeAndNumberType, isType(currentToken.toUpper()), [=](){setValue("type", currentToken.toUpper());});
-        //      ~SIZE & MAX_SIZE & MIN_SIZE
         checkState(SearchFilenamePart, SearchOptionSize, currentToken.toUpper()=="SIZE", [=](){setValue("option", currentToken.toUpper());});
-        checkState(SearchOptionSize, SearchOptionSizeNumber, isNumber(currentToken), [=](){setValue("number", currentToken);});
-        checkState(SearchOptionSizeNumber, SearchOptionSizeNumberType, isType(currentToken), [=](){setValue("type", currentToken);});
+        checkState(SearchOptionSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("type", currentToken);});
+
+        checkState(SearchOptionSize, SearchOptionSizeBetween, currentToken.toUpper()=="BETWEEN", [=](){setValue("elt", currentToken.toUpper());});
+        checkState(SearchOptionSizeBetween, SearchOptionSizeBetweenNumberType, isNumberType(currentToken.toUpper()), [=](){setValue("type", currentToken.toUpper());});
+        checkState(SearchOptionSizeBetweenNumberType, SearchOptionSizeBetweenNumberTypeAnd, currentToken.toUpper()=="AND", [=](){setValue("elt", currentToken.toUpper());});
+        checkState(SearchOptionSizeBetweenNumberTypeAnd, SearchOptionSizeBetweenNumberTypeAndNumberType, isNumberType(currentToken.toUpper()), [=](){setValue("type", currentToken.toUpper());});
         //      ~EXT
         checkState(SearchFilenamePart, SearchOptionExt, currentToken.toUpper()=="EXT", [=](){setValue("option", currentToken.toUpper());});
         checkState(SearchOptionExt, SearchOptionExtExt, isExt(currentToken), [=](){setValue("ext", currentToken);});
@@ -122,52 +165,26 @@ void Fsm::createMapping(QStringList list)
         checkState(SearchOptionTypeType, SearchOptionTypeTypeOr, currentToken.toUpper()=="OR", [=](){setValue("elt", currentToken.toUpper());});
         // Status
         checkState(CommandFound, Status, currentToken.toUpper()=="STATUS", [=](){setValue("cmd", currentToken.toUpper());});
-        checkState(Status, ServerStatus, currentToken.toUpper()=="INDEXING", [=](){setValue("serverStatus", currentToken.toUpper());});
-        checkState(Status, ServerStatus, currentToken.toUpper()=="READY", [=](){setValue("serverStatus", currentToken.toUpper());});
-        checkState(Status, ServerStatus, currentToken.toUpper()=="STOPPED", [=](){setValue("serverStatus", currentToken.toUpper());});
-        checkState(Status, ServerStatus, currentToken.toUpper()=="PAUSED", [=](){setValue("serverStatus", currentToken.toUpper());});
-        checkState(Status, ServerStatus, currentToken.toUpper()=="QUERYING", [=](){setValue("serverStatus", currentToken.toUpper());});
-        checkState(Status, ServerStatus, currentToken.toUpper()=="RESULTS_AVAILABLE", [=](){setValue("serverStatus", currentToken.toUpper());});
+        checkState(Status, ServerStatus, isStatus(currentToken.toUpper()), [=](){setValue("serverStatus", currentToken.toUpper());});
         // Indexer
         checkState(CommandFound, Indexer, currentToken.toUpper()=="INDEXER", [=](){setValue("cmd", currentToken.toUpper());});
-        //checkState(Indexer, IndexerCmd, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Indexer, IndexerCmd, currentToken.toUpper() == "STATUS", [=](){setValue("indexerCmd", currentToken.toUpper());});
-        checkState(Indexer, IndexerCmd, currentToken.toUpper() == "START", [=](){setValue("indexerCmd", currentToken.toUpper());});
-        checkState(Indexer, IndexerCmd, currentToken.toUpper() == "STOP", [=](){setValue("indexerCmd", currentToken.toUpper());});
-        checkState(Indexer, IndexerCmd, currentToken.toUpper() == "PAUSE", [=](){setValue("indexerCmd", currentToken.toUpper());});
-        checkState(Indexer, IndexerCmd, currentToken.toUpper() == "RESUME", [=](){setValue("indexerCmd", currentToken.toUpper());});
+        checkState(Indexer, IndexerCmd, isOption(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
         // Clear
         checkState(CommandFound, Clear, currentToken.toUpper()=="CLEAR", [=](){setValue("cmd", currentToken.toUpper());});
-        //checkState(Clear, ClearEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Clear, ClearEntity, currentToken.toUpper() == "WHITELIST", [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Clear, ClearEntity, currentToken.toUpper() == "BLACKLIST", [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Clear, ClearEntity, currentToken.toUpper() == "FILTERS", [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Clear, ClearEntity, currentToken.toUpper() == "SKIPPED_FILTERS", [=](){setValue("flag", currentToken.toUpper());});
+        checkState(Clear, ClearEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
         // Get
         checkState(CommandFound, Get, currentToken.toUpper()=="GET", [=](){setValue("cmd", currentToken.toUpper());});
-        //checkState(Get, GetEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Get, GetEntity, currentToken.toUpper() == "WHITELIST", [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Get, GetEntity, currentToken.toUpper() == "BLACKLIST", [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Get, GetEntity, currentToken.toUpper() == "FILTERS", [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Get, GetEntity, currentToken.toUpper() == "SKIPPED_FILTERS", [=](){setValue("flag", currentToken.toUpper());});
+        checkState(Get, GetEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
         // Add
         checkState(CommandFound, Add, currentToken.toUpper()=="ADD", [=](){setValue("cmd", currentToken.toUpper());});
-        //checkState(Add, AddEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Add, AddEntity, currentToken.toUpper() == "WHITELIST", [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Add, AddEntity, currentToken.toUpper() == "BLACKLIST", [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Add, AddEntity, currentToken.toUpper() == "FILTERS", [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Add, AddEntity, currentToken.toUpper() == "SKIPPED_FILTERS", [=](){setValue("flag", currentToken.toUpper());});
+        checkState(Add, AddEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
         checkState(AddEntity, AddEntityPath, !currentToken.isEmpty(), [=](){setValue("path", currentToken);});
-
         // Push
         checkState(CommandFound, Push, currentToken.toUpper()=="PUSH", [=](){setValue("cmd", currentToken.toUpper());});
-        //checkState(Push, PushEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Push, PushEntity, currentToken.toUpper() == "WHITELIST", [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Push, PushEntity, currentToken.toUpper() == "BLACKLIST", [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Push, PushEntity, currentToken.toUpper() == "FILTERS", [=](){setValue("flag", currentToken.toUpper());});
-        checkState(Push, PushEntity, currentToken.toUpper() == "SKIPPED_FILTERS", [=](){setValue("flag", currentToken.toUpper());});
+        checkState(Push, PushEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
         checkState(PushEntity, PushEntityPath, !currentToken.isEmpty(), [=](){setValue("path", currentToken);});
-        checkState(PushEntityPath, PushDone, currentToken.toUpper() == "DONE", [=](){setValue("end", currentToken.toUpper());});
+        checkState(PushEntityPath, PushEntityPath, !currentToken.isEmpty(), [=](){setValue("path", currentToken);});
+        checkState(PushEntityPath, PushDone, currentToken.toUpper() == "DONE", [=](){setValue("done", currentToken.toUpper());});
 
         listIterator ++;
 

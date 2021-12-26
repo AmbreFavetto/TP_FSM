@@ -1,5 +1,7 @@
-QT       += core gui network sql
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT -= gui
+
+TEMPLATE = lib
+DEFINES += LIBRARYFSM_LIBRARY
 
 CONFIG += c++11
 
@@ -8,20 +10,14 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    bddrequest.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    myserver.cpp
+    libraryfsm.cpp
 
 HEADERS += \
-    bddrequest.h \
-    mainwindow.h \
-    myserver.h
-
-FORMS += \
-    mainwindow.ui
+    libraryFsm_global.h \
+    libraryfsm.h
 
 # Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
+unix {
+    target.path = /usr/lib
+}
 !isEmpty(target.path): INSTALLS += target
