@@ -1,19 +1,36 @@
 #include "mainwindow.h"
+
 #include "bddrequest.h"
 #include "helpwindow.h"
+
+
+#include <QSqlQuery>
 
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
+    //MainWindow w;
+    //w.show();
+    /* Debut timer */
+    QElapsedTimer timer;
+    timer.start();
 
-    w.show();
+    bddRequest * db = new bddRequest();
+
+    db->setupDatabase();
+    QString location = "C:/";
+
+    //QString location = "C:/Users/Leval/TPDevLogicielAvance2";
+    db->directoryIterator(location);
 
 
-    // !bddRequest * db = new bddRequest();
+    qDebug() << timer.elapsed()/1000 << "seconde";
 
-    // db->directoryIterator(location);
-    return a.exec();
+    return 0;
+    //return a.exec();
 }
+
+
+

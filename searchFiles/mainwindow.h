@@ -16,9 +16,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();    
     HelpWindow helpWindow;
-
-    QString getPath();
-    QString getCmd();
+    QString path;
+    QString command;
+    void getUserPath();
+    void getUserCmd();
 
 private slots:
     void on_btnBrowse_clicked();

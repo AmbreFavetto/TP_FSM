@@ -6,7 +6,7 @@
 
 bddRequest::bddRequest()
 {
-    setupDatabase();
+
 }
 
 int bddRequest::setupDatabase(){
@@ -64,11 +64,15 @@ int bddRequest::setupDatabase(){
 
 int bddRequest::addRow(QStringList data){
     /* Preparation pour modif */
-
+    db.open();
     db.transaction();
     QSqlQuery query;
     query.prepare("INSERT INTO files (name, date_creation, date_modification, size, type)"
                           "VALUES(:name, :date_creation, :date_modification, :size, :type)");
+
+    /* Debut timer */
+    //QElapsedTimer timer;
+    //timer.start();
 
     /* Inserer dans la tables grace au query.prepare */
     query.bindValue(":name", data[0]);
@@ -82,8 +86,8 @@ int bddRequest::addRow(QStringList data){
         return -1;
     }
 
-
-
+    db.commit();
+    //qDebug() << timer.elapsed()/1000 << "seconde";
     return 0;
 }
 
@@ -103,12 +107,10 @@ int bddRequest::extractFileInfo(QFileInfo file) {
 int bddRequest::directoryIterator(QString dirPathName){
     QString dir= dirPathName;
     QDirIterator it(dir, QDirIterator::Subdirectories);
-    db.open();
     while(it.hasNext()){
         QFile file(it.next());
         QFileInfo fileInfo(file);
         if(fileInfo.isFile()) extractFileInfo(fileInfo);
     }
-    db.commit();
     return 0;
 }
