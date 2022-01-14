@@ -132,6 +132,7 @@ class LIBRARYFSM_EXPORT LibraryFsm
         bool isListExt(QString const& str);
         bool isType(QString const& str);
         bool isListType(QString const& str);
+        bool isPath(QString const& str);
 
         void addEltToList(QString const& str);
 

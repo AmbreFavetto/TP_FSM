@@ -21,6 +21,9 @@ public:
     void getUserPath();
     void getUserCmd();
 
+    const QString &getPath() const;
+    void setPath(const QString &newPath);
+
 private slots:
     void on_btnBrowse_clicked();
     void on_btnSendCommand_clicked();

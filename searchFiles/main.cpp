@@ -24,6 +24,8 @@ int main(int argc, char *argv[])
     //QString location = "C:/";
     //QString location = "C:/Users/Leval/TPDevLogicielAvance2";
     //db->directoryIterator(location);
+
+
     //qDebug() << timer.elapsed()/1000 << "seconde";
 
     //return 0;

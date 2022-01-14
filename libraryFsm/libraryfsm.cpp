@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QChar>
 #include <QRegularExpression>
+#include <QDir>
 
 
 
@@ -209,6 +210,14 @@ bool LibraryFsm::isListType(const QString &str)
     return false;
 }
 
+bool LibraryFsm::isPath(const QString &str)
+{
+    QDir dir(str);
+    if(dir.exists()) return true;
+
+    return false;
+}
+
 void LibraryFsm::addEltToList(const QString &str)
 {
     if(!listElts.contains(str)) listElts << str;
@@ -217,13 +226,14 @@ void LibraryFsm::addEltToList(const QString &str)
 void LibraryFsm::createMapping(QStringList list)
 {
     auto listIterator = list.begin();
-    //currentToken = *listIterator;
     currentState = CommandFound;
 
     while(listIterator != list.end()) {
         qDebug() << "create mapping" << currentToken << currentState;
         currentToken = *listIterator;
 
+        checkState(Initial, CommandFound, isCmd(currentToken.toUpper()), [=](){});
+        checkState(Initial, ErrUnknownCmd, !isCmd(currentToken.toUpper()), [=](){});
         // SEARCH
         checkState(CommandFound, Search, currentToken.toUpper()=="SEARCH", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Search, SearchFilenamePart, !currentToken.isEmpty() && currentToken!="SEARCH", [=](){setValue("filenamePart", currentToken);});
@@ -288,18 +298,24 @@ void LibraryFsm::createMapping(QStringList list)
         // Clear
         checkState(CommandFound, Clear, currentToken.toUpper()=="CLEAR", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Clear, ClearEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
+        checkState(Clear, ErrUnknownEntity, !isFlag(currentToken.toUpper()), [=](){}); // ADD ERR MESSAGE
         // Get
         checkState(CommandFound, Get, currentToken.toUpper()=="GET", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Get, GetEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
+        checkState(Get, ErrUnknownEntity, !isFlag(currentToken.toUpper()), [=](){}); // ADD ERR MESSAGE
         // Add
         checkState(CommandFound, Add, currentToken.toUpper()=="ADD", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Add, AddEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
-        checkState(AddEntity, AddEntityPath, !currentToken.isEmpty() && !isFlag(currentToken), [=](){setValue("path", currentToken);});
+        checkState(Add, ErrUnknownEntity, !isFlag(currentToken.toUpper()), [=](){});
+        checkState(AddEntity, AddEntityPath, isPath(currentToken), [=](){setValue("path", currentToken);});
+        checkState(AddEntity, ErrMissingOrBadPath, !isPath(currentToken), [=](){}); // ADD ERR MESSAGE
         // Push
         checkState(CommandFound, Push, currentToken.toUpper()=="PUSH", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Push, PushEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
-        checkState(PushEntity, PushEntityPath, !currentToken.isEmpty() && !isFlag(currentToken) && currentToken != "DONE", [=](){addEltToList(currentToken);});
-        checkState(PushEntityPath, PushEntityPath, !currentToken.isEmpty() && currentToken != "DONE", [=](){addEltToList(currentToken);});
+        checkState(Push, ErrUnknownEntity, !isFlag(currentToken.toUpper()), [=](){}); // ADD ERR MESSAGE
+        checkState(PushEntity, PushEntityPath, isPath(currentToken), [=](){addEltToList(currentToken);});
+        checkState(PushEntityPath, PushEntityPath, isPath(currentToken), [=](){addEltToList(currentToken);});
+        checkState(PushEntity, ErrMissingOrBadPath, !isPath(currentToken), [=](){addEltToList(currentToken);}); // ADD ERR MESSAGE
         checkState(PushEntityPath, PushDone, currentToken.toUpper() == "DONE", [=](){setValue("path", listElts); setValue("done", currentToken.toUpper());});
 
         listIterator ++;

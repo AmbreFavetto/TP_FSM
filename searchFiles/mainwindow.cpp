@@ -38,8 +38,8 @@ void MainWindow::on_btnSendCommand_clicked()
     //fsm->stringToList(line);
 
     bddRequest* db = new bddRequest();
-    db->setupDatabase();
     getUserPath();
+    qDebug() << "PATH" << path;
     QDir d(path);
     if (d.exists()){
         qDebug() << "good";

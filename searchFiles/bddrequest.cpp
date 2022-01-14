@@ -3,10 +3,12 @@
 #include <QList>
 #include <QDateTime>
 #include <QDate>
+#include <QFuture>
 
 bddRequest::bddRequest()
 {
-    setupDatabase();
+    //setupDatabase();
+    _pool.setMaxThreadCount(1);
 }
 
 int bddRequest::setupDatabase(){
@@ -64,7 +66,6 @@ int bddRequest::setupDatabase(){
 
 int bddRequest::addRow(QStringList data){
     /* Preparation pour modif */
-
     db.transaction();
     QSqlQuery query;
     query.prepare("INSERT INTO files (name, date_creation, date_modification, size, type)"
@@ -81,14 +82,12 @@ int bddRequest::addRow(QStringList data){
         qWarning() << "INSERT" << query.lastError().text();
         return -1;
     }
-
-
-
     return 0;
 }
 
 
 int bddRequest::extractFileInfo(QFileInfo file) {
+
     QStringList fileInfos;
     fileInfos.append(file.fileName()); //QString
     fileInfos.append(file.birthTime().date().toString()); //QDateTime to QDate to QString
@@ -101,14 +100,26 @@ int bddRequest::extractFileInfo(QFileInfo file) {
 
 
 int bddRequest::directoryIterator(QString dirPathName){
-    QString dir= dirPathName;
-    QDirIterator it(dir, QDirIterator::Subdirectories);
-    db.open();
-    while(it.hasNext()){
-        QFile file(it.next());
-        QFileInfo fileInfo(file);
-        if(fileInfo.isFile()) extractFileInfo(fileInfo);
-    }
-    db.commit();
+
+
+    QFuture<void> future = QtConcurrent::run(&_pool, [this, dirPathName]() {
+        //QElapsedTimer timer;
+        //timer.start();
+        setupDatabase();
+        QString dir= dirPathName;
+        QDirIterator it(dir, QDirIterator::Subdirectories);
+        db.open();
+        db.transaction();
+        while(it.hasNext()){
+            QFile file(it.next());
+            QFileInfo fileInfo(file);
+            if(fileInfo.isFile()) extractFileInfo(fileInfo);
+        }
+        db.commit();
+        db.close();
+        //qDebug() << timer.elapsed()/1000 << "seconde";
+        return 0;
+    });
+
     return 0;
 }

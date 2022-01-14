@@ -11,9 +11,12 @@
 #include <QDir>
 #include <QSqlQuery>
 #include <QElapsedTimer>
+#include <QThreadPool>
+#include <QtConcurrent>
 
 class bddRequest
 {
+    QThreadPool _pool;
 public:
     /* Constructeur */
     bddRequest();
