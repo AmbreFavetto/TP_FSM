@@ -1,6 +1,9 @@
 #include "libraryfsm.h"
 #include <QDebug>
 #include <QChar>
+#include <QRegularExpression>
+
+
 
 LibraryFsm::LibraryFsm()
 {
@@ -12,6 +15,19 @@ void LibraryFsm::stringToList(QString line)
     listTokens = line.split(" ");
 }
 
+// For EXT and TYPE options
+const QStringList &LibraryFsm::getListElts() const
+{
+    return listElts;
+}
+
+// For EXT and TYPE options
+void LibraryFsm::setListElts(const QStringList &newListElts)
+{
+    listElts = newListElts;
+}
+
+// QMap contains all the tokens stored
 const QMap<QString, QVariant> &LibraryFsm::getValues() const
 {
     return values;
@@ -28,32 +44,28 @@ QVariant LibraryFsm::getValue(QString key)
     return values[key];
 }
 
-QStringList LibraryFsm::getListTokens()
-{
-    return listTokens;
-}
-
 void LibraryFsm::setValue(QString key, QVariant value)
 {
     //values[key] = value;
     values.insert(key, value);
 }
 
+QStringList LibraryFsm::getListTokens()
+{
+    return listTokens;
+}
 
 // "ADD", "PUSH", "CLEAR", "GET", "SEARCH", "INDEXER"
 bool LibraryFsm::isCmd(const QString &str)
 {
     if(correctCmd.contains(str)) return true;
-
     return false;
-
 }
 
 // "WHITELIST","BLACKLIST","FILTERS","SKIPPED_FILTERS"
 bool LibraryFsm::isFlag(const QString &str)
 {
     if(correctFlags.contains(str)) return true;
-
     return false;
 }
 
@@ -61,7 +73,6 @@ bool LibraryFsm::isFlag(const QString &str)
 bool LibraryFsm::isStatus(const QString &str)
 {
     if(correctStatus.contains(str)) return true;
-
     return false;
 }
 
@@ -69,18 +80,72 @@ bool LibraryFsm::isStatus(const QString &str)
 bool LibraryFsm::isAction(const QString &str)
 {
     if(correctActions.contains(str)) return true;
-
     return false;
 }
 
+// For LAST_MODIFIED and CREATED options
 bool LibraryFsm::isDate(const QString &str)
 {
-    if(str == "dd/mm/yyyy" || str == "yyyy") {
+    // for "dd/mm/yyyy" format
+    QRegularExpression re1("^(\\d\\d)/(\\d\\d)/(\\d\\d\\d\\d)$");
+    QRegularExpressionMatch match1 = re1.match(str);
+    if (match1.hasMatch() && currentToken.length() == 10) {
+        int day = match1.captured(1).toInt();
+        int month = match1.captured(2).toInt();
+        int year = match1.captured(3).toInt();
+        if (month <= 0 || month > 12 || day <= 0 || day > 31)
+        {
+            return false;
+        }
+
+        switch (month) {
+        case 4:
+        case 6:
+        case 9:
+        case 11:
+            if (day > 30)
+                return false;
+            return true;
+        case 2:
+            if (day > 29)
+                return false;
+            if (!((year % 4 == 0 && year % 100 != 0) || (year % 4 == 0 && year % 100 == 0 && year % 400 == 0)))
+            {
+                if (day > 28) // year is not bissextile
+                    return false;
+            }
+            return true;
+        default:
+            return true;
+        }
+    }
+
+    // for "mm/yyyy" format
+    QRegularExpression re2("^(\\d\\d)/(\\d\\d\\d\\d)$");
+    QRegularExpressionMatch match2 = re2.match(str);
+    if (match2.hasMatch() && str.length() == 7)
+    {
+        int month = match2.captured(1).toInt();
+        if (month <= 0 || month > 12)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    // for "yyyy" and "yy" format
+    QRegularExpression re3("^(\\d\\d\\d\\d)$");
+    QRegularExpressionMatch match3 = re3.match(str);
+    QRegularExpression re4("^(\\d\\d)$");
+    QRegularExpressionMatch match4 = re4.match(str);
+    if ((match3.hasMatch() && str.length() == 4) || (match4.hasMatch() && str.length() == 2))
+    {
         return true;
     }
     return false;
 }
 
+// for date with SINCE LAST and AGO
 bool LibraryFsm::isNumber(const QString &str)
 {
     for (QChar c : str) {
@@ -89,12 +154,15 @@ bool LibraryFsm::isNumber(const QString &str)
         }
     }
     return true;
-
 }
 
+// For MAX_SIZE, MIN_SIZE and SIZE ~<number>K|M|G
 bool LibraryFsm::isNumberType(const QString &str)
 {
-    if( str == "5M" || str == "6G") {
+    QRegularExpression re("^(\\d+)[KMG]$");
+    QRegularExpressionMatch match = re.match(str);
+    if (match.hasMatch())
+    {
         return true;
     }
     return false;
@@ -110,12 +178,40 @@ bool LibraryFsm::isTime(const QString &str)
 
 bool LibraryFsm::isExt(const QString &str)
 {
+    if(!str.isEmpty() && !str.endsWith(",") && !listElts.contains(str)) {
+        return true;
+    }
     return false;
 }
 
+bool LibraryFsm::isListExt(const QString &str)
+{
+    if(!str.isEmpty() && str.endsWith(",") && !listElts.contains(str)) {
+        return true;
+    }
+    return false;
+}
+
+
 bool LibraryFsm::isType(const QString &str)
 {
+    if(!str.isEmpty() && !str.endsWith(",")) {
+        return true;
+    }
     return false;
+}
+
+bool LibraryFsm::isListType(const QString &str)
+{
+    if(!str.isEmpty() && str.endsWith(",") && !listElts.contains(str)) {
+        return true;
+    }
+    return false;
+}
+
+void LibraryFsm::addEltToList(const QString &str)
+{
+    if(!listElts.contains(str)) listElts << str;
 }
 
 void LibraryFsm::createMapping(QStringList list)
@@ -127,6 +223,7 @@ void LibraryFsm::createMapping(QStringList list)
     while(listIterator != list.end()) {
         qDebug() << "create mapping" << currentToken << currentState;
         currentToken = *listIterator;
+
         // SEARCH
         checkState(CommandFound, Search, currentToken.toUpper()=="SEARCH", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Search, SearchFilenamePart, !currentToken.isEmpty() && currentToken!="SEARCH", [=](){setValue("filenamePart", currentToken);});
@@ -165,19 +262,26 @@ void LibraryFsm::createMapping(QStringList list)
         checkState(SearchOptionSizeBetween, SearchOptionSizeBetweenNumberType, isNumberType(currentToken.toUpper()), [=](){setValue("numberType", currentToken.toUpper());});
         checkState(SearchOptionSizeBetweenNumberType, SearchOptionSizeBetweenNumberTypeAnd, currentToken.toUpper()=="AND", [=](){setValue("and", currentToken.toUpper());});
         checkState(SearchOptionSizeBetweenNumberTypeAnd, SearchOptionSizeBetweenNumberTypeAndNumberType, isNumberType(currentToken.toUpper()), [=](){setValue("numberType2", currentToken.toUpper());});
-        //      ~EXT    ???
+        //      ~EXT
         checkState(SearchFilenamePart, SearchOptionExt, currentToken.toUpper()=="EXT", [=](){setValue("option", currentToken.toUpper());});
-        checkState(SearchOptionExt, SearchOptionExtExt, isExt(currentToken), [=](){setValue("ext", currentToken);});
-        checkState(SearchOptionExtExt, SearchOptionExtExt, isExt(currentToken), [=](){setValue("ext", currentToken);});
-        checkState(SearchOptionExtExt, SearchOptionExtExtOr, currentToken.toUpper()=="OR", [=](){setValue("elt", currentToken.toUpper());});
-        //      ~TYPE   ???
+        //          with ,
+        checkState(SearchOptionExt, SearchOptionExtListExt, isListExt(currentToken), [=](){addEltToList(currentToken);});
+        checkState(SearchOptionExtListExt, SearchOptionExtListExt, isListExt(currentToken), [=](){addEltToList(currentToken);});
+        checkState(SearchOptionExtListExt, SearchOptionExtListExtFinal, isExt(currentToken), [=](){addEltToList(currentToken); setValue("ext", listElts); });
+        //          with OR
+        checkState(SearchOptionExt, SearchOptionExtExt, isExt(currentToken) && currentToken.toUpper() != "EXT" && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("ext", listElts);});
+        checkState(SearchOptionExtExt, SearchOptionExtExtOr, currentToken.toUpper()=="OR", [=](){setValue("or", currentToken.toUpper());});
+        checkState(SearchOptionExtExtOr, SearchOptionExtExt, isExt(currentToken) && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("ext", listElts);});
+        //      ~TYPE
         checkState(SearchFilenamePart, SearchOptionType, currentToken.toUpper()=="TYPE", [=](){setValue("option", currentToken.toUpper());});
-        checkState(SearchOptionType, SearchOptionTypeType, isType(currentToken), [=](){setValue("type", currentToken);});
-        checkState(SearchOptionTypeType, SearchOptionTypeType, isType(currentToken), [=](){setValue("type", currentToken);});
-        checkState(SearchOptionTypeType, SearchOptionTypeTypeOr, currentToken.toUpper()=="OR", [=](){setValue("elt", currentToken.toUpper());});
-        // Status -- ???
-        //checkState(CommandFound, Status, currentToken.toUpper()=="STATUS", [=](){setValue("cmd", currentToken.toUpper());});
-        //checkState(Status, ServerStatus, isStatus(currentToken.toUpper()), [=](){setValue("serverStatus", currentToken.toUpper());});
+        //          with ,
+        checkState(SearchOptionType, SearchOptionTypeListType, isListType(currentToken), [=](){addEltToList(currentToken);});
+        checkState(SearchOptionTypeListType, SearchOptionTypeListType, isListType(currentToken), [=](){addEltToList(currentToken);});
+        checkState(SearchOptionTypeListType, SearchOptionTypeListTypeFinal, isType(currentToken), [=](){addEltToList(currentToken); setValue("type", listElts); });
+        //          with OR
+        checkState(SearchOptionType, SearchOptionTypeType, isType(currentToken) && currentToken.toUpper() != "TYPE" && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("type", listElts);});
+        checkState(SearchOptionTypeType, SearchOptionTypeTypeOr, currentToken.toUpper()=="OR", [=](){setValue("or", currentToken.toUpper());});
+        checkState(SearchOptionTypeTypeOr, SearchOptionTypeType, isType(currentToken) && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("type", listElts);});
         // Indexer
         checkState(CommandFound, Indexer, currentToken.toUpper()=="INDEXER", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Indexer, IndexerCmd, isAction(currentToken.toUpper()), [=](){setValue("action", currentToken.toUpper());});
@@ -191,15 +295,14 @@ void LibraryFsm::createMapping(QStringList list)
         checkState(CommandFound, Add, currentToken.toUpper()=="ADD", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Add, AddEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
         checkState(AddEntity, AddEntityPath, !currentToken.isEmpty() && !isFlag(currentToken), [=](){setValue("path", currentToken);});
-        // Push     ???
+        // Push
         checkState(CommandFound, Push, currentToken.toUpper()=="PUSH", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Push, PushEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
-        checkState(PushEntity, PushEntityPath, !currentToken.isEmpty() && !isFlag(currentToken), [=](){setValue("path", currentToken);});
-        checkState(PushEntityPath, PushEntityPath, !currentToken.isEmpty()  && !isFlag(currentToken) && currentToken != "DONE", [=](){setValue("path", currentToken);});
-        checkState(PushEntityPath, PushDone, currentToken.toUpper() == "DONE", [=](){setValue("done", currentToken.toUpper());});
+        checkState(PushEntity, PushEntityPath, !currentToken.isEmpty() && !isFlag(currentToken) && currentToken != "DONE", [=](){addEltToList(currentToken);});
+        checkState(PushEntityPath, PushEntityPath, !currentToken.isEmpty() && currentToken != "DONE", [=](){addEltToList(currentToken);});
+        checkState(PushEntityPath, PushDone, currentToken.toUpper() == "DONE", [=](){setValue("path", listElts); setValue("done", currentToken.toUpper());});
 
         listIterator ++;
-
     }
 }
 

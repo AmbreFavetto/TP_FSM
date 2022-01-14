@@ -47,12 +47,16 @@ class LIBRARYFSM_EXPORT LibraryFsm
         SearchOptionSizeBetweenNumberTypeAndNumberType,
 
         SearchOptionExt,
+        SearchOptionExtListExt,
         SearchOptionExtExt,
         SearchOptionExtExtOr,
+        SearchOptionExtListExtFinal,
 
         SearchOptionType,
+        SearchOptionTypeListType,
         SearchOptionTypeType,
         SearchOptionTypeTypeOr,
+        SearchOptionTypeListTypeFinal,
 
         // Errors
         ErrBadFilenamePart,
@@ -100,13 +104,14 @@ class LIBRARYFSM_EXPORT LibraryFsm
     QStringList listTokens;
     QString currentToken;
     states currentState;
+    QStringList listElts;
 
     QStringList correctCmd = { "ADD", "PUSH", "CLEAR", "GET", "SEARCH", "INDEXER"};
     QStringList correctFlags = { "WHITELIST","BLACKLIST","FILTERS","SKIPPED_FILTERS"};
     QStringList correctStatus = { "INDEXING","READY","STOPPED","PAUSED","QUERYING", "RESULTS_AVAILABLE"};
     QStringList correctActions = { "STATUS","START","STOP","PAUSE","RESUME"};
-
     QStringList correctTimes = {"MINUTES","HOURS","DAYS","MONTHS","YEAR"};
+
     QMap<QString, QVariant> values;
 
     public:
@@ -124,7 +129,11 @@ class LIBRARYFSM_EXPORT LibraryFsm
         bool isNumberType(QString const& str);
         bool isTime(QString const& str);
         bool isExt(QString const& str);
+        bool isListExt(QString const& str);
         bool isType(QString const& str);
+        bool isListType(QString const& str);
+
+        void addEltToList(QString const& str);
 
         void createMapping(QStringList list);
         void checkState(states previousState, states nextState, bool condition, stateFn fn);
@@ -136,6 +145,8 @@ class LIBRARYFSM_EXPORT LibraryFsm
         QVariant getValue(QString key);
 
         QStringList getListTokens();
+        const QStringList &getListElts() const;
+        void setListElts(const QStringList &newListElts);
 };
 
 #endif // LIBRARYFSM_H

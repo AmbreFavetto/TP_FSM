@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.15.0, 2021-12-23T00:14:48. -->
+<!-- Written by QtCreator 4.15.0, 2021-12-30T23:39:46. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -69,6 +69,15 @@
    </valuemap>
    <valuemap type="QVariantMap" key="AutoTest.CheckStates">
     <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:testSearchFiles">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_add">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_clear">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_extComa">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_extOr">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_get">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_indexer">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_maxSize">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_minSize">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_push">Checked</value>
     <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_searchCreatedAgo">Checked</value>
     <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_searchCreatedBetween">Checked</value>
     <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_searchCreatedSimple">Checked</value>
@@ -77,6 +86,10 @@
     <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_searchLastModifiedBetween">Checked</value>
     <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_searchLastModifiedSimple">Checked</value>
     <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_searchLastModifiedSince">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_sizeSimple">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_sizeSpecial">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_typeComa">Checked</value>
+    <value type="Qt::CheckState" key="1@D:/Ynov/DevLogiciel/TP_FSM/testSearchFiles/tst_testsearchfiles.cpp:test_typeOr">Checked</value>
    </valuemap>
    <value type="int" key="AutoTest.RunAfterBuild">0</value>
    <value type="bool" key="AutoTest.UseGlobal">true</value>

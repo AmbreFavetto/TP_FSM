@@ -31,6 +31,12 @@ private slots:
     void test_sizeSimple();
     void test_sizeSpecial();
 
+    void test_extComa();
+    void test_extOr();
+
+    void test_typeComa();
+    void test_typeOr();
+
     // INDEXER
     void test_indexer();
     // GET
@@ -58,29 +64,20 @@ testSearchFiles::~testSearchFiles()
 void testSearchFiles::test_searchLastModifiedSimple()
 {
     fsm = new LibraryFsm();
-    fsm->stringToList("SEARCH xxx LAST_MODIFIED dd/mm/yyyy");
+    fsm->stringToList("SEARCH xxx LAST_MODIFIED 06/12/2000");
 
     // Result expected
     QMap<QString, QVariant> mapRef ;
     mapRef["cmd"] = "SEARCH";
     mapRef["filenamePart"] = "xxx";
     mapRef["option"] = "LAST_MODIFIED";
-    mapRef["date"] = "dd/mm/yyyy";
-
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
+    mapRef["date"] = "06/12/2000";
 
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
-    //QCOMPARE(wrongMap.values(), map.values());
-
 }
 
 void testSearchFiles::test_searchLastModifiedSince()
@@ -98,19 +95,11 @@ void testSearchFiles::test_searchLastModifiedSince()
     mapRef["number"] = "3";
     mapRef["time"] = "DAYS";
 
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
-
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
-
 }
 
 void testSearchFiles::test_searchLastModifiedAgo()
@@ -127,13 +116,6 @@ void testSearchFiles::test_searchLastModifiedAgo()
     mapRef["time"] = "DAYS";
     mapRef["ago"] = "AGO";
 
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
-
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
     QMap<QString, QVariant> map = fsm->getValues();
@@ -144,7 +126,7 @@ void testSearchFiles::test_searchLastModifiedAgo()
 void testSearchFiles::test_searchLastModifiedBetween()
 {
     fsm = new LibraryFsm();
-    fsm->stringToList("SEARCH xxx LAST_MODIFIED BETWEEN dd/mm/yyyy AND yyyy");
+    fsm->stringToList("SEARCH xxx LAST_MODIFIED BETWEEN 07/12/2000 AND 2021");
 
     // Result expected
     QMap<QString, QVariant> mapRef ;
@@ -152,16 +134,9 @@ void testSearchFiles::test_searchLastModifiedBetween()
     mapRef["filenamePart"] = "xxx";
     mapRef["option"] = "LAST_MODIFIED";
     mapRef["between"] = "BETWEEN";
-    mapRef["date"] = "dd/mm/yyyy";
+    mapRef["date"] = "07/12/2000";
     mapRef["and"] = "AND";
-    mapRef["date2"] = "yyyy";
-
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
+    mapRef["date2"] = "2021";
 
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
@@ -172,21 +147,14 @@ void testSearchFiles::test_searchLastModifiedBetween()
 void testSearchFiles::test_searchCreatedSimple()
 {
     fsm = new LibraryFsm();
-    fsm->stringToList("SEARCH xxx CREATED dd/mm/yyyy");
+    fsm->stringToList("SEARCH xxx CREATED 20/02/2004");
 
     // Result expected
     QMap<QString, QVariant> mapRef ;
     mapRef["cmd"] = "SEARCH";
     mapRef["filenamePart"] = "xxx";
     mapRef["option"] = "CREATED";
-    mapRef["date"] = "dd/mm/yyyy";
-
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
+    mapRef["date"] = "20/02/2004";
 
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
@@ -210,13 +178,6 @@ void testSearchFiles::test_searchCreatedSince()
     mapRef["number"] = "3";
     mapRef["time"] = "DAYS";
 
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
-
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
     QMap<QString, QVariant> map = fsm->getValues();
@@ -238,13 +199,6 @@ void testSearchFiles::test_searchCreatedAgo()
     mapRef["time"] = "DAYS";
     mapRef["ago"] = "AGO";
 
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
-
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
     QMap<QString, QVariant> map = fsm->getValues();
@@ -255,7 +209,7 @@ void testSearchFiles::test_searchCreatedAgo()
 void testSearchFiles::test_searchCreatedBetween()
 {
     fsm = new LibraryFsm();
-    fsm->stringToList("SEARCH xxx CREATED BETWEEN dd/mm/yyyy AND yyyy");
+    fsm->stringToList("SEARCH xxx CREATED BETWEEN 20/03/1999 AND 2025");
 
     // Result expected
     QMap<QString, QVariant> mapRef ;
@@ -263,16 +217,9 @@ void testSearchFiles::test_searchCreatedBetween()
     mapRef["filenamePart"] = "xxx";
     mapRef["option"] = "CREATED";
     mapRef["between"] = "BETWEEN";
-    mapRef["date"] = "dd/mm/yyyy";
+    mapRef["date"] = "20/03/1999";
     mapRef["and"] = "AND";
-    mapRef["date2"] = "yyyy";
-
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
+    mapRef["date2"] = "2025";
 
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
@@ -293,13 +240,6 @@ void testSearchFiles::test_maxSize()
     mapRef["option"] = "MAX_SIZE";
     mapRef["number"] = "5M";
 
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
-
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
     QMap<QString, QVariant> map = fsm->getValues();
@@ -319,13 +259,6 @@ void testSearchFiles::test_minSize()
     mapRef["option"] = "MIN_SIZE";
     mapRef["number"] = "5M";
 
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
-
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
     QMap<QString, QVariant> map = fsm->getValues();
@@ -344,13 +277,6 @@ void testSearchFiles::test_sizeSimple()
     mapRef["filenamePart"] = "xxx";
     mapRef["option"] = "SIZE";
     mapRef["number"] = "5M";
-
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
 
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
@@ -374,12 +300,28 @@ void testSearchFiles::test_sizeSpecial()
     mapRef["and"] = "AND";
     mapRef["numberType2"] = "6G";
 
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
+    listTokens = fsm->getListTokens();
+    fsm->createMapping(listTokens);
+    QMap<QString, QVariant> map = fsm->getValues();
+
+    QCOMPARE(mapRef.values(), map.values());
+}
+
+void testSearchFiles::test_extComa()
+{
+    fsm = new LibraryFsm();
+    fsm->stringToList("SEARCH xxx EXT aaa, bbb, ccc");
+
+    // list ext expected
+    QStringList listRef;
+    listRef << "aaa,"<< "bbb," << "ccc";
+
+    // Result expected
+    QMap<QString, QVariant> mapRef ;
+    mapRef["cmd"] = "SEARCH";
+    mapRef["filenamePart"] = "xxx";
+    mapRef["option"] = "EXT";
+    mapRef["ext"] = listRef;
 
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
@@ -388,7 +330,77 @@ void testSearchFiles::test_sizeSpecial()
     QCOMPARE(mapRef.values(), map.values());
 }
 
-// TODO LIST EXT AND TYPE ???
+void testSearchFiles::test_extOr()
+{
+    fsm = new LibraryFsm();
+    fsm->stringToList("SEARCH xxx EXT aaa OR bbb OR ccc");
+
+    // list ext expected
+    QStringList listRef;
+    listRef << "aaa"<< "bbb" << "ccc";
+
+    // Result expected
+    QMap<QString, QVariant> mapRef ;
+    mapRef["cmd"] = "SEARCH";
+    mapRef["filenamePart"] = "xxx";
+    mapRef["option"] = "EXT";
+    mapRef["ext"] = listRef;
+    mapRef["or"] = "OR";
+
+    listTokens = fsm->getListTokens();
+    fsm->createMapping(listTokens);
+    QMap<QString, QVariant> map = fsm->getValues();
+
+    QCOMPARE(mapRef.values(), map.values());
+}
+
+void testSearchFiles::test_typeComa()
+{
+    fsm = new LibraryFsm();
+    fsm->stringToList("SEARCH xxx TYPE aaa, bbb, ccc");
+
+    // list ext expected
+    QStringList listRef;
+    listRef << "aaa,"<< "bbb," << "ccc";
+
+    // Result expected
+    QMap<QString, QVariant> mapRef ;
+    mapRef["cmd"] = "SEARCH";
+    mapRef["filenamePart"] = "xxx";
+    mapRef["option"] = "TYPE";
+    mapRef["type"] = listRef;
+
+    listTokens = fsm->getListTokens();
+    fsm->createMapping(listTokens);
+    QMap<QString, QVariant> map = fsm->getValues();
+
+    QCOMPARE(mapRef.values(), map.values());
+}
+
+void testSearchFiles::test_typeOr()
+{
+    fsm = new LibraryFsm();
+    fsm->stringToList("SEARCH xxx TYPE aaa OR bbb OR ccc");
+
+    // list ext expected
+    QStringList listRef;
+    listRef << "aaa"<< "bbb" << "ccc";
+
+    // Result expected
+    QMap<QString, QVariant> mapRef ;
+    mapRef["cmd"] = "SEARCH";
+    mapRef["filenamePart"] = "xxx";
+    mapRef["option"] = "TYPE";
+    mapRef["type"] = listRef;
+    mapRef["or"] = "OR";
+
+    listTokens = fsm->getListTokens();
+    fsm->createMapping(listTokens);
+    QMap<QString, QVariant> map = fsm->getValues();
+
+    QCOMPARE(mapRef.values(), map.values());
+}
+
 
 void testSearchFiles::test_indexer()
 {
@@ -399,13 +411,6 @@ void testSearchFiles::test_indexer()
     QMap<QString, QVariant> mapRef ;
     mapRef["cmd"] = "INDEXER";
     mapRef["action"] = "STATUS";
-
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
 
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
@@ -423,13 +428,6 @@ void testSearchFiles::test_get()
     QMap<QString, QVariant> mapRef ;
     mapRef["cmd"] = "GET";
     mapRef["flag"] = "WHITELIST";
-
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
 
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
@@ -449,13 +447,6 @@ void testSearchFiles::test_add()
     mapRef["flag"] = "WHITELIST";
     mapRef["path"] = "xxx";
 
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
-
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
     QMap<QString, QVariant> map = fsm->getValues();
@@ -463,30 +454,29 @@ void testSearchFiles::test_add()
     QCOMPARE(mapRef.values(), map.values());
 }
 
-// TODO régler pb plusieurs fichiers
 void testSearchFiles::test_push()
 {
     fsm = new LibraryFsm();
-    fsm->stringToList("PUSH WHITELIST xxx DONE");
+    fsm->stringToList("PUSH WHITELIST C:/xxx/yyy D:/abc C:/abc/xxx DONE");
+
+    // list ext expected
+    QStringList listRef;
+    listRef << "C:/xxx/yyy" << "D:/abc" << "C:/abc/xxx";
 
     // Result expected
     QMap<QString, QVariant> mapRef ;
     mapRef["cmd"] = "PUSH";
     mapRef["flag"] = "WHITELIST";
-    mapRef["path"] = "xxx";
+    mapRef["path"] = listRef;
     mapRef["done"] = "DONE";
-
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
 
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
     QMap<QString, QVariant> map = fsm->getValues();
 
+    QStringList listPath = fsm->getListElts();
+    qDebug() << "REF 0" << listRef.value(0) << "REF 1" <<listRef.value(1) << "REF 2" <<listRef.value(2) ;
+    qDebug() << "REAL 0" << listPath.value(0) << "REAL 1" <<listPath.value(1) << "REAL 2" <<listPath.value(2) ;
     QCOMPARE(mapRef.values(), map.values());
 }
 
@@ -499,13 +489,6 @@ void testSearchFiles::test_clear()
     QMap<QString, QVariant> mapRef ;
     mapRef["cmd"] = "CLEAR";
     mapRef["flag"] = "WHITELIST";
-
-    // wrong result
-    QMap<QString, QVariant> wrongMap ;
-    wrongMap["cmd"] = "coucou";
-    wrongMap["filenamePart"] = "no";
-    wrongMap["option"] = "stop";
-    wrongMap["date"] = "test";
 
     listTokens = fsm->getListTokens();
     fsm->createMapping(listTokens);
