@@ -125,6 +125,7 @@ class LIBRARYFSM_EXPORT LibraryFsm
         bool isAction(QString const& str);
 
         bool isDate(QString const& str);
+        bool isFileName(const QString &str);
         bool isNumber(QString const& str);
         bool isNumberType(QString const& str);
         bool isTime(QString const& str);

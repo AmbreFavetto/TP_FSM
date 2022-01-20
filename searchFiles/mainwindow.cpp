@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "bddrequest.h"
-
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -37,7 +36,7 @@ void MainWindow::on_btnSendCommand_clicked()
     //Fsm *fsm = new Fsm();
     //fsm->stringToList(line);
 
-    bddRequest* db = new bddRequest();
+    bddRequest *db = new bddRequest();
     getUserPath();
     qDebug() << "PATH" << path;
     QDir d(path);
@@ -45,7 +44,6 @@ void MainWindow::on_btnSendCommand_clicked()
         qDebug() << "good";
         db->directoryIterator(path);
     }
-
 
     //delete fsm;
 }

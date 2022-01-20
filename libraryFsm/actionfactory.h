@@ -11,6 +11,10 @@ class ActionFactory
 public:
     ActionFactory();
     ~ActionFactory();
+
+    void Register(QString actionName, CreateActionsFn fn);
+    Actions* create(QString actionName);
 };
+
 
 #endif // ACTIONFACTORY_H

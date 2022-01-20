@@ -1,7 +1,7 @@
 #ifndef ACTIONS_H
 #define ACTIONS_H
 
-#include "../libraryFsm/libraryfsm.h"
+#include "libraryfsm.h"
 
 #include <QString>
 #include <QDebug>
@@ -10,6 +10,7 @@ class Actions
 {
     QString _name;
     QString _type;
+    QMap<QString, QVariant> _map;
 
 protected:
     LibraryFsm * _fsm = nullptr;
@@ -22,9 +23,11 @@ public:
     virtual ~Actions() {
            qDebug() << __FUNCTION__ << type() << name();
     }
+
    virtual QString name() {
        return _name;
    }
+
    virtual void setName(QString name) {
        _name = name;
    }
@@ -41,7 +44,17 @@ public:
         _fsm = fsm;
    }
 
+   virtual QMap<QString, QVariant> getMap() {
+       return _map;
+   }
+
+
+   virtual void setMap(QMap<QString, QVariant> newMap) {
+       _map = newMap;
+   }
+
    virtual void run() = 0;
+
 
 };
 

@@ -9,19 +9,15 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    actionfactory.cpp \
     bddrequest.cpp \
     helpwindow.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
-    actionfactory.h \
-    actions.h \
     bddrequest.h \
     helpwindow.h \
-    mainwindow.h \
-    tactions.h
+    mainwindow.h
 
 FORMS += \
     helpwindow.ui \
@@ -31,3 +27,10 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../libraryFsm/release/ -llibraryFsm
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../libraryFsm/debug/ -llibraryFsm
+else:unix: LIBS += -L$$OUT_PWD/../libraryFsm/ -llibraryFsm
+
+INCLUDEPATH += $$PWD/../libraryFsm
+DEPENDPATH += $$PWD/../libraryFsm
