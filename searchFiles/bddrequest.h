@@ -34,10 +34,13 @@ public:
     {"id","name","date_creation","date_modification","size","type"} renvoye 0 si l'ajout est passé -1 sinon*/
     int addRow(QStringList data);
 
+
+
     int extractFileInfo(QFileInfo file);
 
     int directoryIterator(QString dirPathName);
-
+signals:
+    void dirsAdded(const QStringList &);
 };
 
 #endif // BDDREQUEST_H
