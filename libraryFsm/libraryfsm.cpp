@@ -304,10 +304,10 @@ void LibraryFsm::createMapping(QStringList list)
         checkState(SearchOptionTypeTypeOr, SearchOptionTypeType, isType(currentToken) && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("type", listElts);});
         // Indexer
         checkState(CommandFound, Indexer, currentToken.toUpper()=="INDEXER", [=](){setValue("cmd", currentToken.toUpper());});
-        checkState(Indexer, IndexerCmd, isAction(currentToken.toUpper()), [=](){setValue("action", currentToken.toUpper());});
+        checkState(Indexer, IndexerCmd, isAction(currentToken.toUpper()), [=](){setValue("action", currentToken.toUpper()); Actions *CmdIndexer = factory->create("CmdIndexer"); CmdIndexer->setMap(values); qDebug() << "COUCOU" << CmdIndexer->type();});
         // Clear
         checkState(CommandFound, Clear, currentToken.toUpper()=="CLEAR", [=](){setValue("cmd", currentToken.toUpper());});
-        checkState(Clear, ClearEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper()); Actions *CmdAdd = factory->create("CmdAdd"); CmdAdd->setMap(values); CmdAdd->run();});
+        checkState(Clear, ClearEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper()); });
         checkState(Clear, ErrUnknownEntity, !isFlag(currentToken.toUpper()) && currentToken != "CLEAR", [=](){}); // ADD ERR MESSAGE
         // Get
         checkState(CommandFound, Get, currentToken.toUpper()=="GET", [=](){setValue("cmd", currentToken.toUpper());});

@@ -69,7 +69,7 @@ void MainWindow::on_btnSendCommand_clicked()
     //QString line = ui->lineEditCommand->text();
     //Fsm *fsm = new Fsm();
     //fsm->stringToList(line);
-
+    m_model->setStringList(QStringList{});
     getUserPath();
     qDebug() << "PATH" << path;
     QDir d(path);
@@ -85,7 +85,7 @@ void MainWindow::on_btnInfos_clicked()
     helpWindow.show();
 }
 
-void MainWindow::onDirsAdded(const QStringList &list) {
+void MainWindow::onDirsAdded(const QString &list) {
     qDebug() << __FUNCTION__ << __LINE__ << list.size() << m_dirs.size();
     m_dirs << list;
     m_model->setStringList(m_dirs);

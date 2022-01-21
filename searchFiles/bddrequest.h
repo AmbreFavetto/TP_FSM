@@ -43,7 +43,7 @@ public:
 
     void selectAllFilesFromDB();
 signals:
-    void dirsAdded(const QStringList &);
+    void dirsAdded(const QString &);
 };
 
 #endif // BDDREQUEST_H

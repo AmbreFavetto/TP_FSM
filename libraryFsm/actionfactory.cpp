@@ -1,5 +1,15 @@
 #include "actionfactory.h"
 
+QMap<QString, CreateActionsFn> &ActionFactory::factoryMap()
+{
+    return m_factoryMap;
+}
+
+void ActionFactory::setFactoryMap(QMap<QString, CreateActionsFn> &newFactoryMap)
+{
+    m_factoryMap = newFactoryMap;
+}
+
 ActionFactory::ActionFactory()
 {
     Register("CmdAdd", &CmdAdd::create);
@@ -7,6 +17,7 @@ ActionFactory::ActionFactory()
     Register("CmdPush", &CmdPush::create);
     Register("CmdClear", &CmdClear::create);
     Register("CmdSearch", &CmdSearch::create);
+    Register("CmdIndexer", &CmdIndexer::create);
 }
 
 ActionFactory::~ActionFactory() {

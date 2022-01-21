@@ -14,6 +14,8 @@ public:
 
     void Register(QString actionName, CreateActionsFn fn);
     Actions* create(QString actionName);
+    QMap<QString, CreateActionsFn> &factoryMap();
+    void setFactoryMap(QMap<QString, CreateActionsFn> &newFactoryMap);
 };
 
 

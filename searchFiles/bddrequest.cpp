@@ -134,12 +134,9 @@ void bddRequest::selectAllFilesFromDB() {
     QSqlQuery query;
     query.exec(QString("SELECT * FROM files"));
 
-    QStringList fileNameList;
-
     while (query.next()) {
-        QStringList valuesList;
-        fileNameList.append(query.value(6).toString());
+        qDebug() << "TEST" << query.value(6).toString();
+        emit dirsAdded(query.value(6).toString());
     }
-    emit dirsAdded(fileNameList);
     qDebug() << __LINE__ << __FUNCTION__ << "EMIT";
 }
