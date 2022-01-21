@@ -10,7 +10,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , _bdd(new bddRequest)
+    , db(new bddRequest)
     , ui(new Ui::MainWindow)
 {
 
@@ -28,19 +28,19 @@ MainWindow::MainWindow(QWidget *parent)
         QMenu *  menu     = new QMenu(this);
         QAction *explore  = new QAction("Open folder", this);
         explore->setStatusTip(QString("Open the folder containg %1 in explorer ").arg(m_selected_entry));
-        //connect(explore, &QAction::triggered, this, &MainWindow::onOpenFolder);
+        connect(explore, &QAction::triggered, this, &MainWindow::onOpenFolder);
         menu->addAction(explore);
 
         QAction *launch = new QAction("Launch file with default application", this);
         launch->setStatusTip(QString("Launch %1 with default application").arg(m_selected_entry));
-        //connect(launch, &QAction::triggered, this, &MainWindow::onLaunchFile);
+        connect(launch, &QAction::triggered, this, &MainWindow::onLaunchFile);
         menu->addAction(launch);
 
         menu->popup(ui->listViewResults->viewport()->mapToGlobal(pos));
     });
 
     //signal & slots
-    connect(_bdd, &bddRequest::dirsAdded, this, &MainWindow::onDirsAdded);
+    connect(db, &bddRequest::dirsAdded, this, &MainWindow::onDirsAdded);
 }
 
 MainWindow::~MainWindow()
@@ -58,7 +58,9 @@ void MainWindow::getUserCmd(){
 
 void MainWindow::on_btnBrowse_clicked()
 {
-
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QString(),
+                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    ui->lineEditSearch->setText(dir);
 }
 
 
@@ -68,7 +70,6 @@ void MainWindow::on_btnSendCommand_clicked()
     //Fsm *fsm = new Fsm();
     //fsm->stringToList(line);
 
-    bddRequest *db = new bddRequest();
     getUserPath();
     qDebug() << "PATH" << path;
     QDir d(path);
@@ -76,8 +77,6 @@ void MainWindow::on_btnSendCommand_clicked()
         qDebug() << "good";
         db->directoryIterator(path);
     }
-
-    //delete fsm;
 }
 
 
@@ -97,17 +96,17 @@ void MainWindow::onDirsAdded(const QStringList &list) {
 
 
 
-/*void MainWindow::onOpenFolder() {
+void MainWindow::onOpenFolder() {
     qDebug() << __FUNCTION__ << __LINE__ << m_selected_entry;
 
     QFileInfo fi(m_selected_entry);
     qDebug() << fi.absolutePath() << " fn=" << fi.fileName();
     QDesktopServices::openUrl(QUrl::fromLocalFile(fi.absolutePath()));
-    ui->lblOverview->setText(QString("Exploring %1").arg(fi.absolutePath()));
-}*/
+//    ui->lblOverview->setText(QString("Exploring %1").arg(fi.absolutePath()));
+}
 
-/*void MainWindow::onLaunchFile() {
+void MainWindow::onLaunchFile() {
     qDebug() << __FUNCTION__ << __LINE__ << m_selected_entry;
     QDesktopServices::openUrl(QUrl::fromLocalFile(m_selected_entry));
-    ui->lblOverview->setText(QString("Launching %1").arg(m_selected_entry));
-}*/
+//    ui->lblOverview->setText(QString("Launching %1").arg(m_selected_entry));
+}

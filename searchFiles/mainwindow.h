@@ -16,7 +16,7 @@ class MainWindow : public QMainWindow
     QStringListModel *m_model = nullptr;
     QString           m_selected_entry = "";
     QStringList       m_dirs;
-    bddRequest *       _bdd    = nullptr;
+    bddRequest *      db    = nullptr;
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -35,8 +35,8 @@ private slots:
     void on_btnBrowse_clicked();
     void on_btnSendCommand_clicked();
     void on_btnInfos_clicked();
-   /*void onOpenFolder();
-    void onLaunchFile();*/
+    void onOpenFolder();
+    void onLaunchFile();
 
 
 private:

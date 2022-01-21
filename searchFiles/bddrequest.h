@@ -14,8 +14,9 @@
 #include <QThreadPool>
 #include <QtConcurrent>
 
-class bddRequest
+class bddRequest : public QObject
 {
+    Q_OBJECT
     QThreadPool _pool;
 public:
     /* Constructeur */
@@ -39,6 +40,8 @@ public:
     int extractFileInfo(QFileInfo file);
 
     int directoryIterator(QString dirPathName);
+
+    void selectAllFilesFromDB();
 signals:
     void dirsAdded(const QStringList &);
 };

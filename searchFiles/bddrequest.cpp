@@ -44,7 +44,8 @@ int bddRequest::setupDatabase(){
                                 "date_creation DATE,"
                                 "date_modification DATE,"
                                 "size STRING,"
-                                "type STRING"
+                                "type STRING,"
+                                "chemin STRING"
                                 ")";
 
     /* Start base de donne */
@@ -68,8 +69,8 @@ int bddRequest::addRow(QStringList data){
     /* Preparation pour modif */
     db.transaction();
     QSqlQuery query;
-    query.prepare("INSERT INTO files (name, date_creation, date_modification, size, type)"
-                          "VALUES(:name, :date_creation, :date_modification, :size, :type)");
+    query.prepare("INSERT INTO files (name, date_creation, date_modification, size, type, chemin)"
+                          "VALUES(:name, :date_creation, :date_modification, :size, :type, :chemin)");
 
     /* Inserer dans la tables grace au query.prepare */
     query.bindValue(":name", data[0]);
@@ -77,6 +78,7 @@ int bddRequest::addRow(QStringList data){
     query.bindValue(":date_modification", data[2]);
     query.bindValue(":size", data[3]);
     query.bindValue(":type", data[4]);
+    query.bindValue(":chemin", data[5]);
     query.exec();
     if (query.lastError().isValid()){
         qWarning() << "INSERT" << query.lastError().text();
@@ -94,6 +96,7 @@ int bddRequest::extractFileInfo(QFileInfo file) {
     fileInfos.append(file.lastModified().date().toString()); //QDateTime to QDate to QString
     fileInfos.append(QString::number(file.size())); //qint64 to QString
     fileInfos.append(file.suffix()); //QString
+    fileInfos.append(file.absoluteFilePath()); //QString
     int a = addRow(fileInfos);
     return a;
 }
@@ -116,10 +119,27 @@ int bddRequest::directoryIterator(QString dirPathName){
             if(fileInfo.isFile()) extractFileInfo(fileInfo);
         }
         db.commit();
+
+        selectAllFilesFromDB();
         db.close();
         //qDebug() << timer.elapsed()/1000 << "seconde";
         return 0;
     });
 
     return 0;
+}
+
+void bddRequest::selectAllFilesFromDB()
+{
+    QSqlQuery query;
+    query.exec(QString("SELECT * FROM files"));
+
+    QStringList fileNameList;
+
+    while (query.next()) {
+        QStringList valuesList;
+        fileNameList.append(query.value(6).toString());
+    }
+    emit dirsAdded(fileNameList);
+    qDebug() << __LINE__ << __FUNCTION__ << "EMIT";
 }
