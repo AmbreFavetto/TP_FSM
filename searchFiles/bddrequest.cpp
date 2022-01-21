@@ -4,7 +4,8 @@
 #include <QDateTime>
 #include <QDate>
 #include <QFuture>
-
+#include <QSqlQueryModel>
+#include <QTableView>
 bddRequest::bddRequest()
 {
     //setupDatabase();
@@ -129,8 +130,7 @@ int bddRequest::directoryIterator(QString dirPathName){
     return 0;
 }
 
-void bddRequest::selectAllFilesFromDB()
-{
+void bddRequest::selectAllFilesFromDB() {
     QSqlQuery query;
     query.exec(QString("SELECT * FROM files"));
 
