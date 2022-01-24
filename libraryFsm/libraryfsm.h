@@ -113,9 +113,10 @@ class LIBRARYFSM_EXPORT LibraryFsm
     QStringList correctTimes = {"MINUTES","HOURS","DAYS","MONTHS","YEAR"};
 
     QMap<QString, QVariant> values;
+    QString path;
 
     public:
-        LibraryFsm();
+        LibraryFsm(QString path);
 
         void stringToList(QString line);
 
@@ -137,7 +138,7 @@ class LIBRARYFSM_EXPORT LibraryFsm
 
         void addEltToList(QString const& str);
 
-        void createMapping(QStringList list);
+        void createMapping();
         void checkState(states previousState, states nextState, bool condition, stateFn fn);
 
         const QMap<QString, QVariant> &getValues() const;

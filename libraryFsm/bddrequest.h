@@ -14,8 +14,9 @@
 #include <QThreadPool>
 #include <QtConcurrent>
 
-class bddRequest
+class bddRequest : public QObject
 {
+    Q_OBJECT
     QThreadPool _pool;
 public:
     /* Constructeur */
@@ -34,10 +35,15 @@ public:
     {"id","name","date_creation","date_modification","size","type"} renvoye 0 si l'ajout est passé -1 sinon*/
     int addRow(QStringList data);
 
+
+
     int extractFileInfo(QFileInfo file);
 
     int directoryIterator(QString dirPathName);
 
+    void selectAllFilesFromDB();
+signals:
+    void dirsAdded(const QString &);
 };
 
 #endif // BDDREQUEST_H

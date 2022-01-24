@@ -1,16 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "bddrequest.h"
 #include <QDebug>
 #include <QDateTime>
 #include <QDebug>
 #include <QDesktopServices>
 #include <QFileDialog>
-
+#include "../libraryFsm/libraryfsm.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , db(new bddRequest)
     , ui(new Ui::MainWindow)
 {
 
@@ -39,8 +37,6 @@ MainWindow::MainWindow(QWidget *parent)
         menu->popup(ui->listViewResults->viewport()->mapToGlobal(pos));
     });
 
-    //signal & slots
-    connect(db, &bddRequest::dirsAdded, this, &MainWindow::onDirsAdded);
 }
 
 MainWindow::~MainWindow()
@@ -66,17 +62,11 @@ void MainWindow::on_btnBrowse_clicked()
 
 void MainWindow::on_btnSendCommand_clicked()
 {
-    //QString line = ui->lineEditCommand->text();
-    //Fsm *fsm = new Fsm();
-    //fsm->stringToList(line);
-    m_model->setStringList(QStringList{});
-    getUserPath();
-    qDebug() << "PATH" << path;
-    QDir d(path);
-    if (d.exists()){
-        qDebug() << "good";
-        db->directoryIterator(path);
-    }
+    QString line = ui->lineEditCommand->text();
+        getUserPath();
+        LibraryFsm *fsm = new LibraryFsm(path);
+        fsm->stringToList(line);
+        fsm->createMapping();
 }
 
 

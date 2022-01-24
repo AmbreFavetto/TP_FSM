@@ -55,6 +55,9 @@ public:
 
    virtual void run() = 0;
 
+   virtual void sendRequest(QString path) {
+       qDebug() << "No GG " << getMap();
+   }
 
 };
 

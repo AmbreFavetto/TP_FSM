@@ -5,8 +5,15 @@
 #include <QDir>
 #include "actionfactory.h"
 
-LibraryFsm::LibraryFsm()
+LibraryFsm::LibraryFsm(QString path)
 {
+    if(path.isEmpty()) {
+            qDebug() << "cheh";
+    } else {
+        qDebug() << path;
+        this->path = path;
+
+    }
 }
 
 // Split the sentence written by the user into several tokens
@@ -232,13 +239,13 @@ void LibraryFsm::addEltToList(const QString &str)
     if(!listElts.contains(str)) listElts << str;
 }
 
-void LibraryFsm::createMapping(QStringList list)
+void LibraryFsm::createMapping()
 {
     ActionFactory *factory = new ActionFactory;
-    auto listIterator = list.begin();
+    auto listIterator = listTokens.begin();
     currentState = Initial;
 
-    while(listIterator != list.end()) {
+    while(listIterator != listTokens.end()) {
         qDebug() << "create mapping" << currentToken << currentState;
         currentToken = *listIterator;
 
@@ -304,7 +311,10 @@ void LibraryFsm::createMapping(QStringList list)
         checkState(SearchOptionTypeTypeOr, SearchOptionTypeType, isType(currentToken) && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("type", listElts);});
         // Indexer
         checkState(CommandFound, Indexer, currentToken.toUpper()=="INDEXER", [=](){setValue("cmd", currentToken.toUpper());});
-        checkState(Indexer, IndexerCmd, isAction(currentToken.toUpper()), [=](){setValue("action", currentToken.toUpper()); Actions *CmdIndexer = factory->create("CmdIndexer"); CmdIndexer->setMap(values); qDebug() << "COUCOU" << CmdIndexer->type();});
+        checkState(Indexer, IndexerCmd, isAction(currentToken.toUpper()), [=](){setValue("action", currentToken.toUpper());
+            Actions *CmdIndexer = factory->create("CmdIndexer");
+            CmdIndexer->setMap(values);
+            CmdIndexer->sendRequest(path);});
         // Clear
         checkState(CommandFound, Clear, currentToken.toUpper()=="CLEAR", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Clear, ClearEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper()); });

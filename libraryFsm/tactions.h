@@ -2,6 +2,7 @@
 #define TACTIONS_H
 
 #include "actions.h"
+#include "bddrequest.h"
 
 template <class T>
 class TActions : public Actions
@@ -71,14 +72,20 @@ class CmdSearch : public TActions<CmdSearch> {
 
 class CmdIndexer : public TActions<CmdIndexer> {
 
-    void run() override {
-        qDebug() << "COUCOU LES AMIS" << _fsm->getValue("cmd");
+    void sendRequest(QString path) override {
         QMap<QString, QVariant> map = getMap();
         auto mapIterator = map.find("action");
+        bddRequest *db = new bddRequest();
+
+
+
         if(mapIterator.value() == "STATUS") {
             qDebug() << "STATUS";
         } else if (mapIterator.value() == "START") {
             qDebug() << "START";
+            //connect(db, &bddRequest::dirsAdded, this, &CmdIndexer::onDirsAddedFromBddRequest);
+            db->directoryIterator(path);
+
         } else if (mapIterator.value() == "STOP") {
             qDebug() << "STOP";
         } else if (mapIterator.value() == "PAUSE") {
@@ -88,8 +95,9 @@ class CmdIndexer : public TActions<CmdIndexer> {
         }
     }
 
-    void test() {
-        qDebug() << "COUCOU LES POTES";
+    void run() override {
+
     }
+
 };
 #endif // TACTIONS_H

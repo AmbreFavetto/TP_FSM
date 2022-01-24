@@ -12,11 +12,13 @@ CONFIG += c++11
 
 SOURCES += \
     actionfactory.cpp \
+    bddrequest.cpp \
     libraryfsm.cpp
 
 HEADERS += \
     actionfactory.h \
     actions.h \
+    bddrequest.h \
     libraryFsm_global.h \
     libraryfsm.h \
     tactions.h

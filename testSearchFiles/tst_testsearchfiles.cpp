@@ -63,7 +63,7 @@ testSearchFiles::~testSearchFiles()
 
 void testSearchFiles::test_searchLastModifiedSimple()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx LAST_MODIFIED 06/12/2000");
 
     // Result expected
@@ -72,17 +72,16 @@ void testSearchFiles::test_searchLastModifiedSimple()
     mapRef["filenamePart"] = "xxx";
     mapRef["option"] = "LAST_MODIFIED";
     mapRef["date"] = "06/12/2000";
-
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_searchLastModifiedSince()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx LAST_MODIFIED SINCE LAST 3 DAYS");
 
     // Result expected
@@ -95,16 +94,16 @@ void testSearchFiles::test_searchLastModifiedSince()
     mapRef["number"] = "3";
     mapRef["time"] = "DAYS";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_searchLastModifiedAgo()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx LAST_MODIFIED 3 DAYS AGO");
 
     // Result expected
@@ -116,16 +115,16 @@ void testSearchFiles::test_searchLastModifiedAgo()
     mapRef["time"] = "DAYS";
     mapRef["ago"] = "AGO";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_searchLastModifiedBetween()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx LAST_MODIFIED BETWEEN 07/12/2000 AND 2021");
 
     // Result expected
@@ -138,15 +137,15 @@ void testSearchFiles::test_searchLastModifiedBetween()
     mapRef["and"] = "AND";
     mapRef["date2"] = "2021";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 void testSearchFiles::test_searchCreatedSimple()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx CREATED 20/02/2004");
 
     // Result expected
@@ -156,16 +155,16 @@ void testSearchFiles::test_searchCreatedSimple()
     mapRef["option"] = "CREATED";
     mapRef["date"] = "20/02/2004";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_searchCreatedSince()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx CREATED SINCE LAST 3 DAYS");
 
     // Result expected
@@ -178,16 +177,16 @@ void testSearchFiles::test_searchCreatedSince()
     mapRef["number"] = "3";
     mapRef["time"] = "DAYS";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_searchCreatedAgo()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx CREATED 3 DAYS AGO");
 
     // Result expected
@@ -199,16 +198,16 @@ void testSearchFiles::test_searchCreatedAgo()
     mapRef["time"] = "DAYS";
     mapRef["ago"] = "AGO";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_searchCreatedBetween()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx CREATED BETWEEN 20/03/1999 AND 2025");
 
     // Result expected
@@ -221,16 +220,16 @@ void testSearchFiles::test_searchCreatedBetween()
     mapRef["and"] = "AND";
     mapRef["date2"] = "2025";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_maxSize()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx MAX_SIZE 5M");
 
     // Result expected
@@ -240,16 +239,16 @@ void testSearchFiles::test_maxSize()
     mapRef["option"] = "MAX_SIZE";
     mapRef["number"] = "5M";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_minSize()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx MIN_SIZE 5M");
 
     // Result expected
@@ -259,16 +258,16 @@ void testSearchFiles::test_minSize()
     mapRef["option"] = "MIN_SIZE";
     mapRef["number"] = "5M";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_sizeSimple()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx SIZE 5M");
 
     // Result expected
@@ -278,16 +277,16 @@ void testSearchFiles::test_sizeSimple()
     mapRef["option"] = "SIZE";
     mapRef["number"] = "5M";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_sizeSpecial()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx SIZE BETWEEN 5M AND 6G");
 
     // Result expected
@@ -300,16 +299,16 @@ void testSearchFiles::test_sizeSpecial()
     mapRef["and"] = "AND";
     mapRef["numberType2"] = "6G";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_extComa()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx EXT aaa, bbb, ccc");
 
     // list ext expected
@@ -323,16 +322,16 @@ void testSearchFiles::test_extComa()
     mapRef["option"] = "EXT";
     mapRef["ext"] = listRef;
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_extOr()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx EXT aaa OR bbb OR ccc");
 
     // list ext expected
@@ -347,16 +346,16 @@ void testSearchFiles::test_extOr()
     mapRef["ext"] = listRef;
     mapRef["or"] = "OR";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_typeComa()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx TYPE aaa, bbb, ccc");
 
     // list ext expected
@@ -370,16 +369,16 @@ void testSearchFiles::test_typeComa()
     mapRef["option"] = "TYPE";
     mapRef["type"] = listRef;
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_typeOr()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("SEARCH xxx TYPE aaa OR bbb OR ccc");
 
     // list ext expected
@@ -394,34 +393,34 @@ void testSearchFiles::test_typeOr()
     mapRef["type"] = listRef;
     mapRef["or"] = "OR";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 
 void testSearchFiles::test_indexer()
 {
-    fsm = new LibraryFsm();
-    fsm->stringToList("INDEXER STATUS");
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
+    fsm->stringToList("INDEXER START");
 
     // Result expected
     QMap<QString, QVariant> mapRef ;
     mapRef["cmd"] = "INDEXER";
-    mapRef["action"] = "STATUS";
+    mapRef["action"] = "START";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_get()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("GET WHITELIST");
 
     // Result expected
@@ -429,16 +428,16 @@ void testSearchFiles::test_get()
     mapRef["cmd"] = "GET";
     mapRef["flag"] = "WHITELIST";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_add()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("ADD WHITELIST xxx");
 
     // Result expected
@@ -447,16 +446,16 @@ void testSearchFiles::test_add()
     mapRef["flag"] = "WHITELIST";
     mapRef["path"] = "xxx";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_push()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("PUSH WHITELIST C:/xxx/yyy D:/abc C:/abc/xxx DONE");
 
     // list ext expected
@@ -470,19 +469,19 @@ void testSearchFiles::test_push()
     mapRef["path"] = listRef;
     mapRef["done"] = "DONE";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QStringList listPath = fsm->getListElts();
     qDebug() << "REF 0" << listRef.value(0) << "REF 1" <<listRef.value(1) << "REF 2" <<listRef.value(2) ;
     qDebug() << "REAL 0" << listPath.value(0) << "REAL 1" <<listPath.value(1) << "REAL 2" <<listPath.value(2) ;
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 void testSearchFiles::test_clear()
 {
-    fsm = new LibraryFsm();
+    LibraryFsm * fsm = new LibraryFsm("C:/Users/ambre/Pictures");
     fsm->stringToList("CLEAR WHITELIST");
 
     // Result expected
@@ -490,11 +489,11 @@ void testSearchFiles::test_clear()
     mapRef["cmd"] = "CLEAR";
     mapRef["flag"] = "WHITELIST";
 
-    listTokens = fsm->getListTokens();
-    fsm->createMapping(listTokens);
+    fsm->createMapping();
     QMap<QString, QVariant> map = fsm->getValues();
 
     QCOMPARE(mapRef.values(), map.values());
+    delete fsm;
 }
 
 QTEST_APPLESS_MAIN(testSearchFiles)

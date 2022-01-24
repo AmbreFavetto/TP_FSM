@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QStringListModel>
 #include "helpwindow.h"
-#include "bddrequest.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,7 +15,6 @@ class MainWindow : public QMainWindow
     QStringListModel *m_model = nullptr;
     QString           m_selected_entry = "";
     QStringList       m_dirs;
-    bddRequest *      db    = nullptr;
 
 public:
     MainWindow(QWidget *parent = nullptr);
