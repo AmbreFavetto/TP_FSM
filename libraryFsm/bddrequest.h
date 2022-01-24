@@ -42,6 +42,13 @@ public:
     int directoryIterator(QString dirPathName);
     int clear(QString flagToClear);
     int add(QString flagToAdd, QString files);
+    int get(QString flagToGet);
+    int searchLastModifiedSimple(QString fileNamePartToSearch, QString date);
+    int searchLastModifiedSinceLast(QString fileNamePartToSearch, QString date);
+    int searchLastModifiedBetween(QString fileNamePartToSearch, QString date);
+    int searchCreateSimple(QString fileNamePartToSearch, QString date);
+    int searchCreateSinceLast(QString fileNamePartToSearch, QString date);
+    int searchCreateBetween(QString fileNamePartToSearch, QString date);
 
     void selectAllFilesFromDB();
 signals:

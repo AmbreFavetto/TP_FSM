@@ -332,13 +332,13 @@ void LibraryFsm::createMapping()
         checkState(Clear, ErrUnknownEntity, !isFlag(currentToken.toUpper()) && currentToken != "CLEAR", [=](){}); // ADD ERR MESSAGE
         // Get
         checkState(CommandFound, Get, currentToken.toUpper()=="GET", [=](){setValue("cmd", currentToken.toUpper());});
-        checkState(Get, GetEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
+        checkState(Get, GetEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper()); callFactory("CmdGet");});
         checkState(Get, ErrUnknownEntity, !isFlag(currentToken.toUpper()) && currentToken != "GET", [=](){}); // ADD ERR MESSAGE
         // Add
         checkState(CommandFound, Add, currentToken.toUpper()=="ADD", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Add, AddEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper());});
         checkState(Add, ErrUnknownEntity, !isFlag(currentToken.toUpper()) && currentToken != "ADD", [=](){});
-        checkState(AddEntity, AddEntityPath, isPath(currentToken) && !isFlag(currentToken.toUpper()), [=](){setValue("path", currentToken);});
+        checkState(AddEntity, AddEntityPath, isPath(currentToken) && !isFlag(currentToken.toUpper()), [=](){setValue("path", currentToken); callFactory("CmdAdd");});
         checkState(AddEntity, ErrMissingOrBadPath, !isPath(currentToken) && !isFlag(currentToken.toUpper()), [=](){}); // ADD ERR MESSAGE
         // Push
         checkState(CommandFound, Push, currentToken.toUpper()=="PUSH", [=](){setValue("cmd", currentToken.toUpper());});

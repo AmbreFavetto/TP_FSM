@@ -39,13 +39,21 @@ class CmdAdd : public TActions<CmdAdd> {
         qDebug() << "sendRequest Add";
         QMap<QString, QVariant> map = getMap();
         bddRequest *db = new bddRequest();
-        db->clear(map.find("flag").value().toString());
+        db->add(map.find("flag").value().toString(), map.find("path").value().toString());
+
     }
 
     void run() override {}
 };
 
 class CmdGet : public TActions<CmdGet> {
+
+    void sendRequest(QString path) override {
+        qDebug() << "sendRequest get";
+        QMap<QString, QVariant> map = getMap();
+        bddRequest *db = new bddRequest();
+        db->get(map.find("flag").value().toString());
+    }
 
     void run() override {
         qDebug() << _fsm->getValue("cmd");
@@ -84,7 +92,6 @@ class CmdSearch : public TActions<CmdSearch> {
 class CmdIndexer : public TActions<CmdIndexer> {
 
     Q_OBJECT
-
 
     private slots:
         void onDirsAddedFromBddRequest(const QString dirs) {
