@@ -40,6 +40,8 @@ public:
     int extractFileInfo(QFileInfo file);
 
     int directoryIterator(QString dirPathName);
+    int clear(QString flagToClear);
+    int add(QString flagToAdd, QString files);
 
     void selectAllFilesFromDB();
 signals:

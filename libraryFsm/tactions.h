@@ -35,10 +35,14 @@ class ActionException {
 
 class CmdAdd : public TActions<CmdAdd> {
 
-    void run() override {
+    void sendRequest(QString path) override {
+        qDebug() << "sendRequest Add";
         QMap<QString, QVariant> map = getMap();
-        qDebug() << "TEST" << map;
+        bddRequest *db = new bddRequest();
+        db->clear(map.find("flag").value().toString());
     }
+
+    void run() override {}
 };
 
 class CmdGet : public TActions<CmdGet> {
@@ -56,6 +60,13 @@ class CmdPush : public TActions<CmdPush> {
 };
 
 class CmdClear : public TActions<CmdClear> {
+
+    void sendRequest(QString path) override {
+        qDebug() << "sendRequest clear";
+        QMap<QString, QVariant> map = getMap();
+        bddRequest *db = new bddRequest();
+        db->clear(map.find("flag").value().toString());
+    }
 
     void run() override {
         qDebug() << _fsm->getValue("cmd");
@@ -78,7 +89,6 @@ class CmdIndexer : public TActions<CmdIndexer> {
     private slots:
         void onDirsAddedFromBddRequest(const QString dirs) {
             emit dirsAdded(dirs);
-            qDebug() << "yo";
         }
 
     public:
@@ -86,8 +96,6 @@ class CmdIndexer : public TActions<CmdIndexer> {
             QMap<QString, QVariant> map = getMap();
             auto mapIterator = map.find("action");
             bddRequest *db = new bddRequest();
-
-
 
             if(mapIterator.value() == "STATUS") {
                 qDebug() << "STATUS";

@@ -42,6 +42,7 @@ int bddRequest::setupDatabase(){
     QString tableFilesCreate = "CREATE TABLE IF NOT EXISTS files("
                                 "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                                 "name STRING,"
+                                "flag STRING,"
                                 "date_creation DATE,"
                                 "date_modification DATE,"
                                 "size STRING,"
@@ -51,7 +52,7 @@ int bddRequest::setupDatabase(){
 
     /* Start base de donne */
     QSqlQuery query;
-    query.exec("DROP TABLE files");
+    //query.exec("DROP TABLE files");
     query.exec(tableFilesCreate);
     query.exec("pragma temp_store = memory");
     query.exec("PRAGMA synchronous = normal");
@@ -70,11 +71,12 @@ int bddRequest::addRow(QStringList data){
     /* Preparation pour modif */
     db.transaction();
     QSqlQuery query;
-    query.prepare("INSERT INTO files (name, date_creation, date_modification, size, type, chemin)"
-                          "VALUES(:name, :date_creation, :date_modification, :size, :type, :chemin)");
+    query.prepare("INSERT INTO files (name, flag, date_creation, date_modification, size, type, chemin)"
+                          "VALUES(:name, :flag, :date_creation, :date_modification, :size, :type, :chemin)");
 
     /* Inserer dans la tables grace au query.prepare */
     query.bindValue(":name", data[0]);
+    query.bindValue(":flag", "default");
     query.bindValue(":date_creation", data[1]);
     query.bindValue(":date_modification", data[2]);
     query.bindValue(":size", data[3]);
@@ -99,6 +101,7 @@ int bddRequest::extractFileInfo(QFileInfo file) {
     fileInfos.append(file.suffix()); //QString
     fileInfos.append(file.absoluteFilePath()); //QString
     int a = addRow(fileInfos);
+    emit dirsAdded(file.absoluteFilePath());
     return a;
 }
 
@@ -117,16 +120,64 @@ int bddRequest::directoryIterator(QString dirPathName){
         while(it.hasNext()){
             QFile file(it.next());
             QFileInfo fileInfo(file);
-            if(fileInfo.isFile()) extractFileInfo(fileInfo);
+            if(fileInfo.isFile()) {
+                extractFileInfo(fileInfo);
+            }
         }
         db.commit();
 
-        selectAllFilesFromDB();
+        //selectAllFilesFromDB();
         db.close();
         //qDebug() << timer.elapsed()/1000 << "seconde";
         return 0;
     });
 
+    return 0;
+}
+
+int bddRequest::clear(QString flagToClear)
+{
+    setupDatabase();
+    if(!db.open()) {
+        qDebug() << "Pb open db";
+        return -1;
+    }
+
+    db.transaction();
+    QSqlQuery query;
+    qDebug() << "FLAG :" << flagToClear;
+    QString queryPrepare = "DELETE FROM files WHERE flag='" + flagToClear +"'";
+    qDebug() << queryPrepare;
+    query.exec(queryPrepare);
+    if(!query.isValid()) {
+        qDebug() << "err cmd clear";
+        return -1;
+    }
+    db.commit();
+    qDebug() << "good cmd clear";
+    return 0;
+}
+
+int bddRequest::add(QString flagToAdd, QString files)
+{
+    setupDatabase();
+    if(!db.open()) {
+        qDebug() << "Pb open db";
+        return -1;
+    }
+
+    db.transaction();
+    QSqlQuery query;
+    qDebug() << "FLAG :" << flagToAdd;
+    QString queryPrepare = "DELETE FROM files WHERE flag='" + flagToAdd +"'";
+    qDebug() << queryPrepare;
+    query.exec(queryPrepare);
+    if(!query.isValid()) {
+        qDebug() << "err cmd clear";
+        return -1;
+    }
+    db.commit();
+    qDebug() << "good cmd clear";
     return 0;
 }
 

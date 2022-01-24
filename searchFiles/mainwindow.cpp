@@ -77,7 +77,7 @@ void MainWindow::on_btnInfos_clicked()
 }
 
 void MainWindow::onDirsAddedFromFsm(const QString &list) {
-    qDebug() << __FUNCTION__ << __LINE__ << list.size() << m_dirs.size();
+    //qDebug() << __FUNCTION__ << __LINE__ << list.size() << m_dirs.size();
     m_dirs << list;
     m_model->setStringList(m_dirs);
     ui->listViewResults->scrollToBottom();

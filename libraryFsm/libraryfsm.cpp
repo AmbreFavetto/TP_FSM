@@ -34,6 +34,15 @@ void LibraryFsm::setListElts(const QStringList &newListElts)
     listElts = newListElts;
 }
 
+void LibraryFsm::callFactory(QString CmdToCreate)
+{
+    ActionFactory *factory = new ActionFactory;
+    Actions *Cmd = factory->create(CmdToCreate);
+    Cmd->setMap(values);
+    connect(Cmd, &Actions::dirsAdded, this, &LibraryFsm::onDirsAddedFromTActions);
+    Cmd->sendRequest(path);
+}
+
 // QMap contains all the tokens stored
 const QMap<QString, QVariant> &LibraryFsm::getValues() const
 {
@@ -241,18 +250,17 @@ void LibraryFsm::addEltToList(const QString &str)
 
 void LibraryFsm::onDirsAddedFromTActions(const QString dirs)
 {
-    qDebug() << "yo les potes dirsAdded from tActions";
+    //qDebug() << "yo les potes dirsAdded from tActions";
     emit dirsAdded(dirs);
 }
 
 void LibraryFsm::createMapping()
 {
-    ActionFactory *factory = new ActionFactory;
     auto listIterator = listTokens.begin();
     currentState = Initial;
 
     while(listIterator != listTokens.end()) {
-        qDebug() << "create mapping" << currentToken << currentState;
+        //qDebug() << "create mapping" << currentToken << currentState;
         currentToken = *listIterator;
 
         checkState(Initial, CommandFound, isCmd(currentToken.toUpper()), [=](){});
@@ -317,14 +325,10 @@ void LibraryFsm::createMapping()
         checkState(SearchOptionTypeTypeOr, SearchOptionTypeType, isType(currentToken) && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("type", listElts);});
         // Indexer
         checkState(CommandFound, Indexer, currentToken.toUpper()=="INDEXER", [=](){setValue("cmd", currentToken.toUpper());});
-        checkState(Indexer, IndexerCmd, isAction(currentToken.toUpper()), [=](){setValue("action", currentToken.toUpper());
-            Actions *CmdIndexer = factory->create("CmdIndexer");
-            CmdIndexer->setMap(values);
-            connect(CmdIndexer, &CmdIndexer::dirsAdded, this, &LibraryFsm::onDirsAddedFromTActions);
-            CmdIndexer->sendRequest(path);});
+        checkState(Indexer, IndexerCmd, isAction(currentToken.toUpper()), [=](){setValue("action", currentToken.toUpper()); callFactory("CmdIndexer");});
         // Clear
         checkState(CommandFound, Clear, currentToken.toUpper()=="CLEAR", [=](){setValue("cmd", currentToken.toUpper());});
-        checkState(Clear, ClearEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper()); });
+        checkState(Clear, ClearEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper()); callFactory("CmdClear");});
         checkState(Clear, ErrUnknownEntity, !isFlag(currentToken.toUpper()) && currentToken != "CLEAR", [=](){}); // ADD ERR MESSAGE
         // Get
         checkState(CommandFound, Get, currentToken.toUpper()=="GET", [=](){setValue("cmd", currentToken.toUpper());});
