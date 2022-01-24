@@ -214,7 +214,6 @@ int bddRequest::searchLastModifiedSimple(QString fileNamePartToSearch, QString d
     return 0;
 }
 
-// TODO Modif date
 int bddRequest::searchLastModifiedSinceLast(QString fileNamePartToSearch, QString date, QString TimeUnit)
 {
     setupDatabase();
@@ -233,7 +232,6 @@ int bddRequest::searchLastModifiedSinceLast(QString fileNamePartToSearch, QStrin
     return 0;
 }
 
-// TODO Modif date
 int bddRequest::searchLastModifiedBetween(QString fileNamePartToSearch, QString date1, QString date2)
 {
     setupDatabase();

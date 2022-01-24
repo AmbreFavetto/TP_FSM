@@ -62,12 +62,14 @@ void MainWindow::on_btnBrowse_clicked()
 
 void MainWindow::on_btnSendCommand_clicked()
 {
+    m_model->setStringList( QStringList{} );
+    m_dirs = QStringList{};
     QString line = ui->lineEditCommand->text();
-        getUserPath();
-        LibraryFsm *fsm = new LibraryFsm(path);
-        connect(fsm, &LibraryFsm::dirsAdded, this, &MainWindow::onDirsAddedFromFsm);
-        fsm->stringToList(line);
-        fsm->createMapping();
+    getUserPath();
+    LibraryFsm *fsm = new LibraryFsm(path);
+    connect(fsm, &LibraryFsm::dirsAdded, this, &MainWindow::onDirsAddedFromFsm);
+    fsm->stringToList(line);
+    fsm->createMapping();
 }
 
 
