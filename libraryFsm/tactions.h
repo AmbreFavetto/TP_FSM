@@ -70,34 +70,46 @@ class CmdSearch : public TActions<CmdSearch> {
 
 };
 
-class CmdIndexer : public TActions<CmdIndexer> {
+class CmdIndexer : public QObject, public TActions<CmdIndexer> {
 
-    void sendRequest(QString path) override {
-        QMap<QString, QVariant> map = getMap();
-        auto mapIterator = map.find("action");
-        bddRequest *db = new bddRequest();
+    Q_OBJECT
 
+    signals:
+        void dirsAdded(const QString &);
 
-
-        if(mapIterator.value() == "STATUS") {
-            qDebug() << "STATUS";
-        } else if (mapIterator.value() == "START") {
-            qDebug() << "START";
-            //connect(db, &bddRequest::dirsAdded, this, &CmdIndexer::onDirsAddedFromBddRequest);
-            db->directoryIterator(path);
-
-        } else if (mapIterator.value() == "STOP") {
-            qDebug() << "STOP";
-        } else if (mapIterator.value() == "PAUSE") {
-            qDebug() << "PAUSE";
-        } else if (mapIterator.value() == "RESUME") {
-            qDebug() << "RESUME";
+    private slots:
+        void onDirsAddedFromBddRequest(const QString dirs) {
+            emit dirsAdded(dirs);
+            qDebug() << "yo";
         }
-    }
 
-    void run() override {
+    public:
+        void sendRequest(QString path) override {
+            QMap<QString, QVariant> map = getMap();
+            auto mapIterator = map.find("action");
+            bddRequest *db = new bddRequest();
 
-    }
+
+
+            if(mapIterator.value() == "STATUS") {
+                qDebug() << "STATUS";
+            } else if (mapIterator.value() == "START") {
+                qDebug() << "START";
+                connect(db, &bddRequest::dirsAdded, this, &CmdIndexer::onDirsAddedFromBddRequest);
+                db->directoryIterator(path);
+
+            } else if (mapIterator.value() == "STOP") {
+                qDebug() << "STOP";
+            } else if (mapIterator.value() == "PAUSE") {
+                qDebug() << "PAUSE";
+            } else if (mapIterator.value() == "RESUME") {
+                qDebug() << "RESUME";
+            }
+        }
+
+        void run() override {
+
+        }
 
 };
 #endif // TACTIONS_H
