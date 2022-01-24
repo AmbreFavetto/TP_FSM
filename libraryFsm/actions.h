@@ -56,8 +56,12 @@ public:
 
    virtual void run() = 0;
 
-   virtual void sendRequest(QString path) {
+   virtual void sendRequest() {
        qDebug() << "No GG " << getMap();
+   }
+
+   virtual void sendRequest(QString path) {
+       qDebug() << "Path : " << path;
    }
 
    signals:

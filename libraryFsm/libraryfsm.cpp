@@ -34,13 +34,18 @@ void LibraryFsm::setListElts(const QStringList &newListElts)
     listElts = newListElts;
 }
 
-void LibraryFsm::callFactory(QString CmdToCreate)
+void LibraryFsm::callFactory(QString CmdToCreate, bool sendPath)
 {
     ActionFactory *factory = new ActionFactory;
     Actions *Cmd = factory->create(CmdToCreate);
     Cmd->setMap(values);
     connect(Cmd, &Actions::dirsAdded, this, &LibraryFsm::onDirsAddedFromTActions);
-    Cmd->sendRequest(path);
+    if(sendPath) {
+        Cmd->sendRequest(path);
+    } else {
+        Cmd->sendRequest();
+    }
+
 }
 
 // QMap contains all the tokens stored
@@ -269,63 +274,63 @@ void LibraryFsm::createMapping()
         checkState(CommandFound, Search, currentToken.toUpper()=="SEARCH", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Search, SearchFilenamePart, !currentToken.isEmpty() && currentToken!="SEARCH", [=](){setValue("filenamePart", currentToken);});
         //      ~LAST_MODIFIED
-        checkState(SearchFilenamePart, SearchOptionLastModified, currentToken.toUpper()=="LAST_MODIFIED", [=](){setValue("option", currentToken.toUpper());});
+        checkState(SearchFilenamePart, SearchOptionLastModified, currentToken.toUpper()=="LAST_MODIFIED", [=](){setValue("option", currentToken.toUpper()); callFactory("CmdSearch");});
         checkState(SearchOptionLastModified, SearchOptionSimpleDate, isDate(currentToken), [=](){setValue("date", currentToken);});
         checkState(SearchOptionLastModified, SearchOptionSince, currentToken.toUpper()=="SINCE", [=](){setValue("since", currentToken.toUpper());});
-        checkState(SearchOptionLastModified, SearchOptionNumber, isNumber(currentToken), [=](){setValue("number", currentToken);});
+        checkState(SearchOptionLastModified, SearchOptionNumber, isNumber(currentToken), [=](){setValue("number", currentToken); callFactory("CmdSearch");});
         checkState(SearchOptionLastModified, SearchOptionBetween, currentToken.toUpper()=="BETWEEN", [=](){setValue("between", currentToken.toUpper());});
         //      ~CREATED
         checkState(SearchFilenamePart, SearchOptionCreated, currentToken.toUpper()=="CREATED", [=](){setValue("option", currentToken.toUpper());});
-        checkState(SearchOptionCreated, SearchOptionSimpleDate, isDate(currentToken), [=](){setValue("date", currentToken);});
+        checkState(SearchOptionCreated, SearchOptionSimpleDate, isDate(currentToken), [=](){setValue("date", currentToken); callFactory("CmdSearch");});
         checkState(SearchOptionCreated, SearchOptionSince, currentToken.toUpper()=="SINCE", [=](){setValue("since", currentToken.toUpper());});
         checkState(SearchOptionCreated, SearchOptionNumber, isNumber(currentToken), [=](){setValue("number", currentToken);});
         checkState(SearchOptionCreated, SearchOptionBetween, currentToken.toUpper()=="BETWEEN", [=](){setValue("between", currentToken.toUpper());});
         //      ~LAST_MODIFIED & CREATED
         checkState(SearchOptionSince, SearchOptionSinceLast, currentToken.toUpper()=="LAST", [=](){setValue("last", currentToken.toUpper());});
         checkState(SearchOptionSinceLast, SearchOptionSinceLastNumber, isNumber(currentToken), [=](){setValue("number", currentToken);});
-        checkState(SearchOptionSinceLastNumber, SearchOptionSinceLastNumberTime, isTime(currentToken.toUpper()), [=](){setValue("time", currentToken.toUpper());});
+        checkState(SearchOptionSinceLastNumber, SearchOptionSinceLastNumberTime, isTime(currentToken.toUpper()), [=](){setValue("time", currentToken.toUpper()); callFactory("CmdSearch");});
         checkState(SearchOptionNumber, SearchOptionNumberTime, isTime(currentToken), [=](){setValue("time", currentToken);});
-        checkState(SearchOptionNumberTime, SearchOptionNumberTimeAgo, currentToken.toUpper()=="AGO", [=](){setValue("ago", currentToken.toUpper());});
+        checkState(SearchOptionNumberTime, SearchOptionNumberTimeAgo, currentToken.toUpper()=="AGO", [=](){setValue("ago", currentToken.toUpper()); callFactory("CmdSearch");});
         checkState(SearchOptionBetween, SearchOptionBetweenSimpleDate, isDate(currentToken), [=](){setValue("date", currentToken);});
         checkState(SearchOptionBetweenSimpleDate, SearchOptionBetweenSimpleDateAnd, currentToken.toUpper()=="AND", [=](){setValue("and", currentToken.toUpper());});
-        checkState(SearchOptionBetweenSimpleDateAnd, SearchOptionBetweenSimpleDateAndSimpleDate, isDate(currentToken), [=](){setValue("date2", currentToken);});
+        checkState(SearchOptionBetweenSimpleDateAnd, SearchOptionBetweenSimpleDateAndSimpleDate, isDate(currentToken), [=](){setValue("date2", currentToken); callFactory("CmdSearch");});
         //      ~MAX_SIZE
         checkState(SearchFilenamePart, SearchOptionMaxSize, currentToken.toUpper()=="MAX_SIZE", [=](){setValue("option", currentToken.toUpper());});
-        checkState(SearchOptionMaxSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("number", currentToken);});
+        checkState(SearchOptionMaxSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("number", currentToken); callFactory("CmdSearch");});
         //      ~MIN_SIZE
         checkState(SearchFilenamePart, SearchOptionMinSize, currentToken.toUpper()=="MIN_SIZE", [=](){setValue("option", currentToken.toUpper());});
-        checkState(SearchOptionMinSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("number", currentToken);});
+        checkState(SearchOptionMinSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("number", currentToken); callFactory("CmdSearch");});
         //      ~SIZE
         checkState(SearchFilenamePart, SearchOptionSize, currentToken.toUpper()=="SIZE", [=](){setValue("option", currentToken.toUpper());});
-        checkState(SearchOptionSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("number", currentToken);});
+        checkState(SearchOptionSize, SearchOptionSizeNumberType, isNumberType(currentToken), [=](){setValue("number", currentToken); callFactory("CmdSearch");});
 
         checkState(SearchOptionSize, SearchOptionSizeBetween, currentToken.toUpper()=="BETWEEN", [=](){setValue("between", currentToken.toUpper());});
         checkState(SearchOptionSizeBetween, SearchOptionSizeBetweenNumberType, isNumberType(currentToken.toUpper()), [=](){setValue("numberType", currentToken.toUpper());});
         checkState(SearchOptionSizeBetweenNumberType, SearchOptionSizeBetweenNumberTypeAnd, currentToken.toUpper()=="AND", [=](){setValue("and", currentToken.toUpper());});
-        checkState(SearchOptionSizeBetweenNumberTypeAnd, SearchOptionSizeBetweenNumberTypeAndNumberType, isNumberType(currentToken.toUpper()), [=](){setValue("numberType2", currentToken.toUpper());});
+        checkState(SearchOptionSizeBetweenNumberTypeAnd, SearchOptionSizeBetweenNumberTypeAndNumberType, isNumberType(currentToken.toUpper()), [=](){setValue("numberType2", currentToken.toUpper()); callFactory("CmdSearch");});
         //      ~EXT
         checkState(SearchFilenamePart, SearchOptionExt, currentToken.toUpper()=="EXT", [=](){setValue("option", currentToken.toUpper());});
         //          with ,
         checkState(SearchOptionExt, SearchOptionExtListExt, isListExt(currentToken), [=](){addEltToList(currentToken);});
         checkState(SearchOptionExtListExt, SearchOptionExtListExt, isListExt(currentToken), [=](){addEltToList(currentToken);});
-        checkState(SearchOptionExtListExt, SearchOptionExtListExtFinal, isExt(currentToken), [=](){addEltToList(currentToken); setValue("ext", listElts); });
+        checkState(SearchOptionExtListExt, SearchOptionExtListExtFinal, isExt(currentToken), [=](){addEltToList(currentToken); setValue("ext", listElts); callFactory("CmdSearch");});
         //          with OR
         checkState(SearchOptionExt, SearchOptionExtExt, isExt(currentToken) && currentToken.toUpper() != "EXT" && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("ext", listElts);});
         checkState(SearchOptionExtExt, SearchOptionExtExtOr, currentToken.toUpper()=="OR", [=](){setValue("or", currentToken.toUpper());});
-        checkState(SearchOptionExtExtOr, SearchOptionExtExt, isExt(currentToken) && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("ext", listElts);});
+        checkState(SearchOptionExtExtOr, SearchOptionExtExt, isExt(currentToken) && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("ext", listElts); callFactory("CmdSearch");});
         //      ~TYPE
         checkState(SearchFilenamePart, SearchOptionType, currentToken.toUpper()=="TYPE", [=](){setValue("option", currentToken.toUpper());});
         //          with ,
         checkState(SearchOptionType, SearchOptionTypeListType, isListType(currentToken), [=](){addEltToList(currentToken);});
         checkState(SearchOptionTypeListType, SearchOptionTypeListType, isListType(currentToken), [=](){addEltToList(currentToken);});
-        checkState(SearchOptionTypeListType, SearchOptionTypeListTypeFinal, isType(currentToken), [=](){addEltToList(currentToken); setValue("type", listElts); });
+        checkState(SearchOptionTypeListType, SearchOptionTypeListTypeFinal, isType(currentToken), [=](){addEltToList(currentToken); setValue("type", listElts); callFactory("CmdSearch");});
         //          with OR
         checkState(SearchOptionType, SearchOptionTypeType, isType(currentToken) && currentToken.toUpper() != "TYPE" && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("type", listElts);});
         checkState(SearchOptionTypeType, SearchOptionTypeTypeOr, currentToken.toUpper()=="OR", [=](){setValue("or", currentToken.toUpper());});
-        checkState(SearchOptionTypeTypeOr, SearchOptionTypeType, isType(currentToken) && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("type", listElts);});
+        checkState(SearchOptionTypeTypeOr, SearchOptionTypeType, isType(currentToken) && currentToken.toUpper() != "OR", [=](){addEltToList(currentToken); setValue("type", listElts); callFactory("CmdSearch");});
         // Indexer
         checkState(CommandFound, Indexer, currentToken.toUpper()=="INDEXER", [=](){setValue("cmd", currentToken.toUpper());});
-        checkState(Indexer, IndexerCmd, isAction(currentToken.toUpper()), [=](){setValue("action", currentToken.toUpper()); callFactory("CmdIndexer");});
+        checkState(Indexer, IndexerCmd, isAction(currentToken.toUpper()), [=](){setValue("action", currentToken.toUpper()); callFactory("CmdIndexer", true);});
         // Clear
         checkState(CommandFound, Clear, currentToken.toUpper()=="CLEAR", [=](){setValue("cmd", currentToken.toUpper());});
         checkState(Clear, ClearEntity, isFlag(currentToken.toUpper()), [=](){setValue("flag", currentToken.toUpper()); callFactory("CmdClear");});

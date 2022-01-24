@@ -8,7 +8,6 @@
 
 bddRequest::bddRequest()
 {
-    //setupDatabase();
     _pool.setMaxThreadCount(1);
 }
 
@@ -45,7 +44,7 @@ int bddRequest::setupDatabase(){
                                 "flag STRING,"
                                 "date_creation DATE,"
                                 "date_modification DATE,"
-                                "size STRING,"
+                                "size INTEGER,"
                                 "type STRING,"
                                 "chemin STRING"
                                 ")";
@@ -79,7 +78,7 @@ int bddRequest::addRow(QStringList data){
     query.bindValue(":flag", "default");
     query.bindValue(":date_creation", data[1]);
     query.bindValue(":date_modification", data[2]);
-    query.bindValue(":size", data[3]);
+    query.bindValue(":size", data[3].toInt());
     query.bindValue(":type", data[4]);
     query.bindValue(":chemin", data[5]);
     query.exec();
@@ -114,7 +113,7 @@ int bddRequest::directoryIterator(QString dirPathName){
         setupDatabase();
         QString dir= dirPathName;
         QDirIterator it(dir, QDirIterator::Subdirectories);
-        db.open();
+        //db.open();
         db.transaction();
         while(it.hasNext()){
             QFile file(it.next());
@@ -137,10 +136,6 @@ int bddRequest::directoryIterator(QString dirPathName){
 int bddRequest::clear(QString flagToClear)
 {
     setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
 
     db.transaction();
     QSqlQuery query;
@@ -148,57 +143,54 @@ int bddRequest::clear(QString flagToClear)
     QString queryPrepare = "DELETE FROM files WHERE flag='" + flagToClear +"'";
     qDebug() << queryPrepare;
     query.exec(queryPrepare);
-    if(!query.isValid()) {
+    if(query.lastError().isValid()) {
         qDebug() << "err cmd clear";
         return -1;
     }
     db.commit();
+    db.close();
     qDebug() << "good cmd clear";
     return 0;
 }
 
 int bddRequest::add(QString flagToAdd, QString files)
 {
-    setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
+    QFuture<void> future = QtConcurrent::run(&_pool, [this, flagToAdd, files]() {
+        setupDatabase();
 
-    db.transaction();
-    QSqlQuery query;
-    qDebug() << "FLAG :" << flagToAdd;
-    QString queryPrepare = "UPDATE files SET flag = '" + flagToAdd +"' WHERE chemin = '" + files + "'";
-    qDebug() << queryPrepare;
-    query.exec(queryPrepare);
-    if(!query.isValid()) {
-        qDebug() << "err cmd add";
-        return -1;
-    }
-    db.commit();
-    qDebug() << "good cmd add";
+        db.transaction();
+
+        QSqlQuery query;
+        QString queryPrepare = "UPDATE files SET flag = '" + flagToAdd + "' WHERE chemin = '" + files + "'";
+        qDebug() << queryPrepare;
+        query.exec(queryPrepare);
+        if(query.lastError().isValid()) {
+            qDebug() << query.lastError();
+            qDebug() << "err cmd add";
+            return -1;
+        }
+        db.commit();
+        db.close();
+        qDebug() << "good cmd add";
+        return 0;
+    });
+
     return 0;
 }
 
 int bddRequest::get(QString flagToGet)
 {
     setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
 
-    db.transaction();
     QSqlQuery query;
-    qDebug() << "FLAG :" << flagToGet;
     QString queryPrepare = "SELECT * FROM files WHERE flag = '" + flagToGet + "'";
     qDebug() << queryPrepare;
     query.exec(queryPrepare);
-    if(!query.isValid()) {
+    if(query.lastError().isValid()) {
         qDebug() << "err cmd get";
         return -1;
     }
-    db.commit();
+    db.close();
     qDebug() << "good cmd get";
     return 0;
 }
@@ -207,16 +199,13 @@ int bddRequest::get(QString flagToGet)
 int bddRequest::searchLastModifiedSimple(QString fileNamePartToSearch, QString date)
 {
     setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
+
     db.transaction();
     QSqlQuery query;
     QString queryPrepare = "SELECT * FROM files WHERE name LIKE '" + fileNamePartToSearch + "' AND date_modification = '" + date + "'" ;
     qDebug() << queryPrepare;
     query.exec(queryPrepare);
-    if(!query.isValid()) {
+    if(query.lastError().isValid()) {
         qDebug() << "err cmd search last modify simple";
         return -1;
     }
@@ -229,16 +218,13 @@ int bddRequest::searchLastModifiedSimple(QString fileNamePartToSearch, QString d
 int bddRequest::searchLastModifiedSinceLast(QString fileNamePartToSearch, QString date, QString TimeUnit)
 {
     setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
+
     db.transaction();
     QSqlQuery query;
     QString queryPrepare = "SELECT * FROM files WHERE name LIKE '" + fileNamePartToSearch + "' AND "; // date < date courrante
     qDebug() << queryPrepare;
     query.exec(queryPrepare);
-    if(!query.isValid()) {
+    if(query.lastError().isValid()) {
         qDebug() << "err cmd search last modify since last";
         return -1;
     }
@@ -251,17 +237,13 @@ int bddRequest::searchLastModifiedSinceLast(QString fileNamePartToSearch, QStrin
 int bddRequest::searchLastModifiedBetween(QString fileNamePartToSearch, QString date1, QString date2)
 {
     setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
 
     db.transaction();
     QSqlQuery query;
     QString queryPrepare = "SELECT * FROM files WHERE name LIKE '" + fileNamePartToSearch + "' AND date_modification BETWEEN '" + date1 + "' AND '" + date2 + "'";
     qDebug() << queryPrepare;
     query.exec(queryPrepare);
-    if(!query.isValid()) {
+    if(query.lastError().isValid()) {
         qDebug() << "err cmd search last modify between";
         return -1;
     }
@@ -270,21 +252,16 @@ int bddRequest::searchLastModifiedBetween(QString fileNamePartToSearch, QString 
     return 0;
 }
 
-// TODO Modif date
 int bddRequest::searchCreateSimple(QString fileNamePartToSearch, QString date)
 {
     setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
 
     db.transaction();
     QSqlQuery query;
     QString queryPrepare = "SELECT * FROM files WHERE name LIKE '" + fileNamePartToSearch + "' AND date_creation = '" + date + "'";
     qDebug() << queryPrepare;
     query.exec(queryPrepare);
-    if(!query.isValid()) {
+    if(query.lastError().isValid()) {
         qDebug() << "err cmd search create simple";
         return -1;
     }
@@ -296,16 +273,13 @@ int bddRequest::searchCreateSimple(QString fileNamePartToSearch, QString date)
 int bddRequest::searchCreateSinceLast(QString fileNamePartToSearch, QString date, QString TimeUnit)
 {
     setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
+
     db.transaction();
     QSqlQuery query;
     QString queryPrepare = "SELECT * FROM files WHERE name LIKE '" + fileNamePartToSearch + "' AND "; // date < date courrante
     qDebug() << queryPrepare;
     query.exec(queryPrepare);
-    if(!query.isValid()) {
+    if(query.lastError().isValid()) {
         qDebug() << "err cmd search create since last";
         return -1;
     }
@@ -317,17 +291,13 @@ int bddRequest::searchCreateSinceLast(QString fileNamePartToSearch, QString date
 int bddRequest::searchCreateBetween(QString fileNamePartToSearch, QString date1, QString date2)
 {
     setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
 
     db.transaction();
     QSqlQuery query;
     QString queryPrepare = "SELECT * FROM files WHERE name LIKE '" + fileNamePartToSearch + "' AND date_creation BETWEEN '" + date1 + "' AND '" + date2 + "'";
     qDebug() << queryPrepare;
     query.exec(queryPrepare);
-    if(!query.isValid()) {
+    if(query.lastError().isValid()) {
         qDebug() << "err cmd search create between";
         return -1;
     }
@@ -339,17 +309,13 @@ int bddRequest::searchCreateBetween(QString fileNamePartToSearch, QString date1,
 int bddRequest::searchMaxSize(QString fileNamePartToSearch, QString size)
 {
     setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
 
     db.transaction();
     QSqlQuery query;
     QString queryPrepare = "SELECT * FROM files WHERE name LIKE '" + fileNamePartToSearch + "' AND WHERE size <'" + size + "'";
     qDebug() << queryPrepare;
     query.exec(queryPrepare);
-    if(!query.isValid()) {
+    if(query.lastError().isValid()) {
         qDebug() << "err cmd search max size";
         return -1;
     }
@@ -361,17 +327,13 @@ int bddRequest::searchMaxSize(QString fileNamePartToSearch, QString size)
 int bddRequest::searchMinSize(QString fileNamePartToSearch, QString size)
 {
     setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
 
     db.transaction();
     QSqlQuery query;
     QString queryPrepare = "SELECT * FROM files WHERE name LIKE '" + fileNamePartToSearch + "' AND WHERE size >'" + size + "'";
     qDebug() << queryPrepare;
     query.exec(queryPrepare);
-    if(!query.isValid()) {
+    if(query.lastError().isValid()) {
         qDebug() << "err cmd search min size";
         return -1;
     }
@@ -383,17 +345,13 @@ int bddRequest::searchMinSize(QString fileNamePartToSearch, QString size)
 int bddRequest::searchSize(QString fileNamePartToSearch, QString size)
 {
     setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
 
     db.transaction();
     QSqlQuery query;
     QString queryPrepare = "SELECT * FROM files WHERE name LIKE '" + fileNamePartToSearch + "' AND WHERE size ='" + size + "'";
     qDebug() << queryPrepare;
     query.exec(queryPrepare);
-    if(!query.isValid()) {
+    if(query.lastError().isValid()) {
         qDebug() << "err cmd search size";
         return -1;
     }
@@ -405,17 +363,13 @@ int bddRequest::searchSize(QString fileNamePartToSearch, QString size)
 int bddRequest::searchSizeBetween(QString fileNamePartToSearch, QString size1, QString size2)
 {
     setupDatabase();
-    if(!db.open()) {
-        qDebug() << "Pb open db";
-        return -1;
-    }
 
     db.transaction();
     QSqlQuery query;
     QString queryPrepare = "SELECT * FROM files WHERE name LIKE '" + fileNamePartToSearch + "' AND WHERE size BETWEEN '" + size1 + "' AND '" + size2 + "'";
     qDebug() << queryPrepare;
     query.exec(queryPrepare);
-    if(!query.isValid()) {
+    if(query.lastError().isValid()) {
         qDebug() << "err cmd search size between";
         return -1;
     }

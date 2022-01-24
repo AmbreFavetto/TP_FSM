@@ -151,7 +151,7 @@ class LIBRARYFSM_EXPORT LibraryFsm : public QObject
         const QStringList &getListElts() const;
         void setListElts(const QStringList &newListElts);
 
-        void callFactory(QString CmdToCreate);
+        void callFactory(QString CmdToCreate, bool sendPath = false);
     signals:
         void dirsAdded(const QString &);
 

@@ -8,7 +8,6 @@ class testSearchFiles : public QObject
 {
     Q_OBJECT
     QStringList listTokens;
-    LibraryFsm * fsm;
 
 public:
     testSearchFiles();

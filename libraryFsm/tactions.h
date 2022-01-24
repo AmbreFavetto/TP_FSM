@@ -35,7 +35,7 @@ class ActionException {
 
 class CmdAdd : public TActions<CmdAdd> {
 
-    void sendRequest(QString path) override {
+    void sendRequest() override {
         qDebug() << "sendRequest Add";
         QMap<QString, QVariant> map = getMap();
         bddRequest *db = new bddRequest();
@@ -48,7 +48,7 @@ class CmdAdd : public TActions<CmdAdd> {
 
 class CmdGet : public TActions<CmdGet> {
 
-    void sendRequest(QString path) override {
+    void sendRequest() override {
         qDebug() << "sendRequest get";
         QMap<QString, QVariant> map = getMap();
         bddRequest *db = new bddRequest();
@@ -69,7 +69,7 @@ class CmdPush : public TActions<CmdPush> {
 
 class CmdClear : public TActions<CmdClear> {
 
-    void sendRequest(QString path) override {
+    void sendRequest() override {
         qDebug() << "sendRequest clear";
         QMap<QString, QVariant> map = getMap();
         bddRequest *db = new bddRequest();
@@ -90,7 +90,6 @@ class CmdSearch : public TActions<CmdSearch> {
 };
 
 class CmdIndexer : public TActions<CmdIndexer> {
-
     Q_OBJECT
 
     private slots:
