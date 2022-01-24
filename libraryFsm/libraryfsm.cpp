@@ -239,6 +239,12 @@ void LibraryFsm::addEltToList(const QString &str)
     if(!listElts.contains(str)) listElts << str;
 }
 
+void LibraryFsm::onDirsAddedFromTActions(const QString dirs)
+{
+    qDebug() << "yo les potes dirsAdded from tActions";
+    emit dirsAdded(dirs);
+}
+
 void LibraryFsm::createMapping()
 {
     ActionFactory *factory = new ActionFactory;
@@ -314,6 +320,7 @@ void LibraryFsm::createMapping()
         checkState(Indexer, IndexerCmd, isAction(currentToken.toUpper()), [=](){setValue("action", currentToken.toUpper());
             Actions *CmdIndexer = factory->create("CmdIndexer");
             CmdIndexer->setMap(values);
+            connect(CmdIndexer, &CmdIndexer::dirsAdded, this, &LibraryFsm::onDirsAddedFromTActions);
             CmdIndexer->sendRequest(path);});
         // Clear
         checkState(CommandFound, Clear, currentToken.toUpper()=="CLEAR", [=](){setValue("cmd", currentToken.toUpper());});

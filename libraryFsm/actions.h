@@ -6,8 +6,9 @@
 #include <QString>
 #include <QDebug>
 
-class Actions
+class Actions : public QObject
 {
+    Q_OBJECT
     QString _name;
     QString _type;
     QMap<QString, QVariant> _map;
@@ -58,6 +59,9 @@ public:
    virtual void sendRequest(QString path) {
        qDebug() << "No GG " << getMap();
    }
+
+   signals:
+      void dirsAdded(const QString &);
 
 };
 

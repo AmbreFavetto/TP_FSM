@@ -70,12 +70,10 @@ class CmdSearch : public TActions<CmdSearch> {
 
 };
 
-class CmdIndexer : public QObject, public TActions<CmdIndexer> {
+class CmdIndexer : public TActions<CmdIndexer> {
 
     Q_OBJECT
 
-    signals:
-        void dirsAdded(const QString &);
 
     private slots:
         void onDirsAddedFromBddRequest(const QString dirs) {

@@ -28,7 +28,7 @@ public:
     const QString &getPath() const;
     void setPath(const QString &newPath);
 public slots:
-    void onDirsAdded(const QString &);
+    void onDirsAddedFromFsm(const QString &);
 private slots:
     void on_btnBrowse_clicked();
     void on_btnSendCommand_clicked();

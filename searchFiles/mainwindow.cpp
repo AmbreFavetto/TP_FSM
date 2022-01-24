@@ -65,6 +65,7 @@ void MainWindow::on_btnSendCommand_clicked()
     QString line = ui->lineEditCommand->text();
         getUserPath();
         LibraryFsm *fsm = new LibraryFsm(path);
+        connect(fsm, &LibraryFsm::dirsAdded, this, &MainWindow::onDirsAddedFromFsm);
         fsm->stringToList(line);
         fsm->createMapping();
 }
@@ -75,7 +76,7 @@ void MainWindow::on_btnInfos_clicked()
     helpWindow.show();
 }
 
-void MainWindow::onDirsAdded(const QString &list) {
+void MainWindow::onDirsAddedFromFsm(const QString &list) {
     qDebug() << __FUNCTION__ << __LINE__ << list.size() << m_dirs.size();
     m_dirs << list;
     m_model->setStringList(m_dirs);

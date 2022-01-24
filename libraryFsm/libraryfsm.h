@@ -7,9 +7,9 @@
 #include "libraryFsm_global.h"
 
 typedef std::function<void()> stateFn;
-class LIBRARYFSM_EXPORT LibraryFsm
+class LIBRARYFSM_EXPORT LibraryFsm : public QObject
 {
-    //Q_OBJECT
+    Q_OBJECT
 
     // differents states of the fsm
     enum states {
@@ -150,6 +150,12 @@ class LIBRARYFSM_EXPORT LibraryFsm
         QStringList getListTokens();
         const QStringList &getListElts() const;
         void setListElts(const QStringList &newListElts);
+
+    signals:
+        void dirsAdded(const QString &);
+
+    private slots:
+        void onDirsAddedFromTActions(const QString dirs);
 };
 
 #endif // LIBRARYFSM_H
